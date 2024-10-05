@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(140.0),
+        preferredSize: const Size.fromHeight(125.0),
         child: ClipPath(
           clipper: CustomShapeClipper(),
           child: AppBar(
@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Padding(
         //هجربها في ال metting
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 0.0),
           child: Column(

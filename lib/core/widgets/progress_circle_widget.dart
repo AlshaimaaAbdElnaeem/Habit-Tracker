@@ -5,20 +5,19 @@ import 'package:task_project/core/util/custom_text_style.dart';
 
 class ProgressCircle extends StatelessWidget {
   const ProgressCircle({
-    super.key,
+    super.key, required this.radius, required this.centerWidget, required this.percent,
   });
-
+final double radius ;
+final Widget centerWidget;
+final double percent ;
   @override
   Widget build(BuildContext context) {
     return CircularPercentIndicator(
-      radius: 70.0,
+      radius: radius,
       lineWidth: 10.0,
-      percent: 0.6,
+      percent:percent,
       reverse: true,
-      center: Text(
-        "3/5",
-        style: CustomTextStyle.progressWordsStyle,
-      ),
+      center:centerWidget,
       progressColor: AppColors.primaryColor,
       backgroundColor: Colors.grey.withOpacity(0.5),
       circularStrokeCap: CircularStrokeCap.round,
