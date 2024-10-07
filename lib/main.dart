@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'features/home/presentation/views/home_page.dart';
+import 'features/report/presentation/views/report_page.dart';
 
 void main() {
   runApp(const MyApp());
