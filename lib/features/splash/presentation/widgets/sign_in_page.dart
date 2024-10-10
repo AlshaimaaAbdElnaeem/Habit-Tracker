@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:task_project/features/home/presentation/views/home_page.dart';
 
-
-
-// SignInPage widget with enhanced design and image usage
 class SignInPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Custom AppBar with gradient and new font style
       appBar: AppBar(
         title: Text(
           'Sign In',
@@ -29,7 +25,6 @@ class SignInPage extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          // Adding a background image for aesthetic appeal
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
@@ -46,7 +41,6 @@ class SignInPage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Adding a logo or another image at the top
                     Container(
                       height: 150,
                       width: 150,
@@ -67,17 +61,17 @@ class SignInPage extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 20),
-                    // Updated Username and Password Fields with custom design
                     _buildTextField(
-                      'Username',
+                      'Email',
                       false,
-                      _usernameController,
+                      _emailController,
                           (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Username is required';
+                          return 'Email is required';
                         }
-                        if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
-                          return 'Username must not contain numbers';
+                        // Regular expression for email validation
+                        if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                          return 'Enter a valid email';
                         }
                         return null;
                       },
@@ -98,11 +92,9 @@ class SignInPage extends StatelessWidget {
                       },
                     ),
                     SizedBox(height: 30),
-                    // Styled login button with gradient background
                     InkWell(
                       onTap: () {
                         if (_formKey.currentState!.validate()) {
-                          // Navigate to the HomePage on successful login
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => HomePage()),
@@ -115,7 +107,7 @@ class SignInPage extends StatelessWidget {
                             colors: [
                               Colors.blue[900]!,
                               Colors.orange[300]!,
-                            ], // Gradient colors
+                            ],
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,
                           ),
@@ -148,7 +140,6 @@ class SignInPage extends StatelessWidget {
     );
   }
 
-  // Custom text field builder with enhanced style and visibility
   Widget _buildTextField(String label, bool isObscure,
       TextEditingController controller, String? Function(String?) validator) {
     return TextFormField(
@@ -162,21 +153,21 @@ class SignInPage extends StatelessWidget {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide(
-            color: Colors.blue[900]!, // Border color
+            color: Colors.blue[900]!,
             width: 2,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide(
-            color: Colors.blue[400]!, // Enabled border color
+            color: Colors.blue[400]!,
             width: 2,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide(
-            color: Colors.orange[300]!, // Focused border color
+            color: Colors.orange[300]!,
             width: 2,
           ),
         ),
