@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:task_project/features/home/presentation/views/home_page.dart';
+import 'package:task_project/features/splash/presentation/widgets/custom_button.dart'; // Import the CustomButton widget
 
+// SignInPage widget with email and password fields
 class SignInPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
@@ -25,6 +27,7 @@ class SignInPage extends StatelessWidget {
       ),
       body: Stack(
         children: [
+          // Background image
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
@@ -41,6 +44,7 @@ class SignInPage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    // Logo or image
                     Container(
                       height: 150,
                       width: 150,
@@ -61,6 +65,7 @@ class SignInPage extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 20),
+                    // Email field
                     _buildTextField(
                       'Email',
                       false,
@@ -69,7 +74,6 @@ class SignInPage extends StatelessWidget {
                         if (value == null || value.isEmpty) {
                           return 'Email is required';
                         }
-                        // Regular expression for email validation
                         if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
                           return 'Enter a valid email';
                         }
@@ -77,6 +81,7 @@ class SignInPage extends StatelessWidget {
                       },
                     ),
                     SizedBox(height: 20),
+                    // Password field
                     _buildTextField(
                       'Password',
                       true,
@@ -92,43 +97,20 @@ class SignInPage extends StatelessWidget {
                       },
                     ),
                     SizedBox(height: 30),
-                    InkWell(
-                      onTap: () {
+                    // Sign In button using CustomButton
+                    CustomButton(
+                      text: 'Login',
+                      backgroundColor: Colors.blue[900]!, // Gradient colors
+                      textColor: Colors.white,
+                      onPressed: () {
                         if (_formKey.currentState!.validate()) {
+                          // Navigate to the HomePage on successful login
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => HomePage()),
                           );
                         }
                       },
-                      child: Ink(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.blue[900]!,
-                              Colors.orange[300]!,
-                            ],
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 100),
-                          constraints: BoxConstraints(
-                            maxWidth: double.infinity,
-                            minHeight: 50,
-                          ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Login',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
                     ),
                   ],
                 ),
@@ -140,6 +122,7 @@ class SignInPage extends StatelessWidget {
     );
   }
 
+  // Custom text field builder
   Widget _buildTextField(String label, bool isObscure,
       TextEditingController controller, String? Function(String?) validator) {
     return TextFormField(
@@ -153,21 +136,21 @@ class SignInPage extends StatelessWidget {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide(
-            color: Colors.blue[900]!,
+            color: Colors.blue[900]!, // Border color
             width: 2,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide(
-            color: Colors.blue[400]!,
+            color: Colors.blue[400]!, // Enabled border color
             width: 2,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide(
-            color: Colors.orange[300]!,
+            color: Colors.orange[300]!, // Focused border color
             width: 2,
           ),
         ),

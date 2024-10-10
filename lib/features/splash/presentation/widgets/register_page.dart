@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:task_project/features/splash/presentation/widgets/custom_button.dart'; // Import the button
 
-// RegisterPage widget with enhanced design using blue, white, and orange color scheme
 class RegisterPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
@@ -27,7 +27,6 @@ class RegisterPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Stack(
           children: [
-            // Background decoration with soft blue gradient
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -56,7 +55,6 @@ class RegisterPage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 30),
-                      // Name input field
                       _buildTextField('Name', false, _nameController, (value) {
                         if (value == null || value.isEmpty) {
                           return 'Name is required';
@@ -67,7 +65,6 @@ class RegisterPage extends StatelessWidget {
                         return null;
                       }),
                       SizedBox(height: 20),
-                      // Email input field
                       _buildTextField('Email', false, _emailController, (value) {
                         if (value == null || value.isEmpty) {
                           return 'Email is required';
@@ -78,7 +75,6 @@ class RegisterPage extends StatelessWidget {
                         return null;
                       }),
                       SizedBox(height: 20),
-                      // Password input field
                       _buildTextField('Password', true, _passwordController, (value) {
                         if (value == null || value.isEmpty) {
                           return 'Password is required';
@@ -89,7 +85,6 @@ class RegisterPage extends StatelessWidget {
                         return null;
                       }),
                       SizedBox(height: 20),
-                      // Re-Password input field
                       _buildTextField('Re-Password', true, _rePasswordController, (value) {
                         if (value == null || value.isEmpty) {
                           return 'Re-Password is required';
@@ -103,16 +98,9 @@ class RegisterPage extends StatelessWidget {
                         return null;
                       }),
                       SizedBox(height: 40),
-                      // Register button with orange color
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange, // Orange button color
-                          padding: EdgeInsets.symmetric(
-                              vertical: 15, horizontal: 100),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
+                      CustomButton(
+                        text: 'Register',
+                        backgroundColor: Colors.orange,
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -121,13 +109,6 @@ class RegisterPage extends StatelessWidget {
                             Navigator.pop(context);
                           }
                         },
-                        child: Text(
-                          'Register',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
-                          ),
-                        ),
                       ),
                     ],
                   ),
@@ -140,7 +121,6 @@ class RegisterPage extends StatelessWidget {
     );
   }
 
-  // Custom text field with blue shades for design and orange label
   Widget _buildTextField(
       String label, bool isObscure, TextEditingController controller, String? Function(String?) validator) {
     return TextFormField(
@@ -150,11 +130,11 @@ class RegisterPage extends StatelessWidget {
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(
-          color: Colors.orange, // Orange label color
+          color: Colors.orange,
           fontWeight: FontWeight.bold,
         ),
         filled: true,
-        fillColor: Colors.blue[700]!.withOpacity(0.8), // Blue background color for text field
+        fillColor: Colors.blue[700]!.withOpacity(0.8),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide.none,
