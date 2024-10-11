@@ -17,7 +17,8 @@ class SignInPage extends StatefulWidget {
 
 class _SignInPageState extends State<SignInPage> {
   final _formKey = GlobalKey<FormState>();
-
+String ?email ;
+String ? password ;
   final TextEditingController _emailController = TextEditingController();
 
   final TextEditingController _passwordController = TextEditingController();
@@ -36,7 +37,7 @@ void dispose() {
             isLoading = true;
           } else if (state is LoginSuccess) {
             isLoading = false;
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) =>const HomePage()),
             );
@@ -114,7 +115,8 @@ void dispose() {
                           if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
                             return 'Enter a valid email';
                           }
-                          return null;
+                          email = value ;
+                          return value;
                         },
                       ),
                      const SizedBox(height: 20),
@@ -126,11 +128,13 @@ void dispose() {
                             (value) {
                           if (value == null || value.isEmpty) {
                             return 'Password is required';
+
                           }
                           if (value.length < 8) {
                             return 'Password must be at least 8 characters long';
                           }
-                          return null;
+                          password = value ;
+                          return value;
                         },
                       ),
                      const SizedBox(height: 30),
@@ -142,7 +146,7 @@ void dispose() {
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             // Navigate to the HomePage on successful login
-                          //BlocProvider.of<AuthCubit>(context).loginUser(email: _emailController, password: password)
+                          BlocProvider.of<AuthCubit>(context).loginUser(email: email!, password: password!);
                           }
                         },
                       ),

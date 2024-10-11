@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_project/features/auth/data/auth_cubit/auth_states.dart';
+import 'package:task_project/features/auth/presentation/model_view/users_model.dart';
 
 class AuthCubit extends Cubit<AuthStates>{
   AuthCubit(AuthStates initialState) : super(initialState);
@@ -23,16 +24,18 @@ class AuthCubit extends Cubit<AuthStates>{
     }
 
   }
-  Future<void> registerUser({required String email , required String password}) async {
+  Future<void> registerUser({required UserModel userdata}) async {
     CollectionReference users =
     FirebaseFirestore.instance.collection("users");
     try{
       emit(RegisterLoading());
       UserCredential user = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
-      // users.add({
-      //   "username": name ,
-      // });
+          .createUserWithEmailAndPassword(email: userdata.email, password: userdata.password);
+      users.add({
+        "username": userdata.userName ,
+        "email" : userdata.email,
+        "password" :userdata.password,
+      });
       emit(RegisterSuccess());
     }on FirebaseAuthException catch (ex) {
       if (ex.code == 'weak-password') {
