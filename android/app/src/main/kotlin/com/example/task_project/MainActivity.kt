@@ -1,4 +1,4 @@
-package com.example.task_project
+package com.habit_tracker.app
 
 import io.flutter.embedding.android.FlutterActivity
 

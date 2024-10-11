@@ -7,6 +7,7 @@ class TaskItem extends StatelessWidget {
       {super.key, required this.taskName, required this.isCompleted});
   final String taskName;
   final bool isCompleted;
+
   @override
   Widget build(BuildContext context) {
     return Padding(

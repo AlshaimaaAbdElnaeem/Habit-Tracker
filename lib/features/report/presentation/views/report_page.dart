@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/widgets/progress_circle_widget.dart';
+
+
+
+
 class ReportPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ReportPageCall();
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: ReportPageCall(),
+    );
   }
 }
 
@@ -52,14 +60,68 @@ class _ReportPageState extends State<ReportPageCall> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(70.0), //the height of the AppBar
         child: AppBar(
-          title: Container(
-            child: Text(
-              'Today\'s report',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              // Left Icon (Calendar)
+              Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Text(
+                    'Calendar',
+                    style: TextStyle(fontSize: 9),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.calendar_month_outlined),
+                    onPressed: () {
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => CalenderPage()),
+                      // );
+                    },
+                  ),
+                ],
               ),
-            ),
+              // Spacer between columns
+              SizedBox(width: 20),
+              // Middle Text (Report) - clickable
+              GestureDetector(
+                onTap: () {
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => ReportPage()),
+                  // );
+                },
+                child:const Text(
+                  'Today\'s report',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              // Spacer between columns
+              SizedBox(width: 20),
+              // Right Icon (Graph)
+              Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Text(
+                    'Graph',
+                    style: TextStyle(fontSize: 9),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.stacked_line_chart_outlined),
+                    onPressed: () {
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => GraphPage()),
+                      // );
+                    },
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
@@ -80,46 +142,35 @@ class _ReportPageState extends State<ReportPageCall> {
                 child: Column(
                   children: [
                     // Circular Progress Indicator in the center
-                    Stack(
-                      alignment:
-                          Alignment.center, // Align children in the center
+                    Column(// Align children in the center
                       children: [
                         Container(
                           width: 120,
                           // Width of the circular progress indicator
                           height: 120,
                           // Height of the circular progress indicator
-                          child: CircularProgressIndicator(
-                            value: _progressValue,
-                            strokeWidth: 10,
-                            // Stroke width
-                            backgroundColor: Colors.grey[300],
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.blue),
-                          ),
+                          child: ProgressCircle(radius: 60.0, centerWidget: Image.asset(
+                            'assets/images/cup.png', // Cup image
+                            width: 80, // Increase image width
+                            height: 70, // Increase image height
+                            // fit: BoxFit.cover,
+                          ), percent:  (_progressValue * 100)/100, ),
+                          //
+                          // CircularProgressIndicator(
+                          //   value: _progressValue,
+                          //   strokeWidth: 10,
+                          //   // Stroke width
+                          //   backgroundColor: Colors.grey[300],
+                          //   valueColor:
+                          //   AlwaysStoppedAnimation<Color>(Colors.blue),
+                          // ),
                         ),
                         // Image inside the circular progress
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ClipOval(
-                              child: Image.asset(
-                                'images/cup.png', // Cup image
-                                width: 80, // Increase image width
-                                height: 80, // Increase image height
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            SizedBox(height: 5),
-                            // Space between image and percentage
-                            // Percentage text
-                            Text(
-                              '${(_progressValue * 100).toStringAsFixed(0)}%',
-                              // Display percentage
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
-                          ],
+                        Text(
+                          '${(_progressValue * 100).toStringAsFixed(0)}%',
+                          // Display percentage
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -134,19 +185,19 @@ class _ReportPageState extends State<ReportPageCall> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               ...completedTasks.map((task) => Row(
-                                    children: [
-                                      Icon(Icons.check_circle,
-                                          color: Colors.green, size: 16),
-                                      // Reduce icon size
-                                      SizedBox(width: 5),
-                                      Text(
-                                        task,
-                                        style: TextStyle(
-                                            fontSize:
-                                                12), // Decrease task text size
-                                      ),
-                                    ],
-                                  )),
+                                children: [
+                                  Icon(Icons.check_circle,
+                                      color: Colors.green, size: 16),
+                                  // Reduce icon size
+                                  SizedBox(width: 5),
+                                  Text(
+                                    task,
+                                    style: TextStyle(
+                                        fontSize:
+                                        12), // Decrease task text size
+                                  ),
+                                ],
+                              )),
                             ],
                           ),
                         ), // Incomplete tasks on the right
@@ -155,20 +206,20 @@ class _ReportPageState extends State<ReportPageCall> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               ...incompleteTasks.map((task) => Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        task,
-                                        style: TextStyle(
-                                            fontSize:
-                                                12), // Decrease task text size
-                                      ),
-                                      SizedBox(width: 5),
-                                      Icon(Icons.radio_button_unchecked,
-                                          color: Colors.red, size: 16),
-                                      // Reduce icon size
-                                    ],
-                                  )),
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    task,
+                                    style: TextStyle(
+                                        fontSize:
+                                        12), // Decrease task text size
+                                  ),
+                                  SizedBox(width: 5),
+                                  Icon(Icons.radio_button_unchecked,
+                                      color: Colors.red, size: 16),
+                                  // Reduce icon size
+                                ],
+                              )),
                             ],
                           ),
                         ),
@@ -189,7 +240,7 @@ class _ReportPageState extends State<ReportPageCall> {
                   int completedTasksForDay = (index + 1) %
                       5; // Example: completed tasks count for the day
                   int totalTasksForDay =
-                      5; // Example: total tasks count for the day
+                  5; // Example: total tasks count for the day
                   double dayProgress =
                       (completedTasksForDay / totalTasksForDay) * 100;
                   String dayTitle = 'Day ${index + 1}'; // Example: Day number

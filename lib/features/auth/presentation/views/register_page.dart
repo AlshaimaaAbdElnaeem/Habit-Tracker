@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:task_project/features/splash/presentation/widgets/custom_button.dart'; // Import the button
 
+import '../../../../core/widgets/custom_button.dart';
 class RegisterPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
@@ -12,7 +12,7 @@ class RegisterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title:const  Text(
           'Register',
           style: TextStyle(
             fontSize: 24,
@@ -45,8 +45,8 @@ class RegisterPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(height: 50),
-                      Text(
+                    const   SizedBox(height: 50),
+                     const  Text(
                         'Create an Account',
                         style: TextStyle(
                           fontSize: 28,
@@ -54,7 +54,7 @@ class RegisterPage extends StatelessWidget {
                           color: Colors.white,
                         ),
                       ),
-                      SizedBox(height: 30),
+                     const  SizedBox(height: 30),
                       _buildTextField('Name', false, _nameController, (value) {
                         if (value == null || value.isEmpty) {
                           return 'Name is required';
@@ -64,7 +64,7 @@ class RegisterPage extends StatelessWidget {
                         }
                         return null;
                       }),
-                      SizedBox(height: 20),
+                     const SizedBox(height: 20),
                       _buildTextField('Email', false, _emailController, (value) {
                         if (value == null || value.isEmpty) {
                           return 'Email is required';
@@ -74,7 +74,7 @@ class RegisterPage extends StatelessWidget {
                         }
                         return null;
                       }),
-                      SizedBox(height: 20),
+                     const SizedBox(height: 20),
                       _buildTextField('Password', true, _passwordController, (value) {
                         if (value == null || value.isEmpty) {
                           return 'Password is required';
@@ -84,7 +84,7 @@ class RegisterPage extends StatelessWidget {
                         }
                         return null;
                       }),
-                      SizedBox(height: 20),
+                     const SizedBox(height: 20),
                       _buildTextField('Re-Password', true, _rePasswordController, (value) {
                         if (value == null || value.isEmpty) {
                           return 'Re-Password is required';
@@ -97,7 +97,7 @@ class RegisterPage extends StatelessWidget {
                         }
                         return null;
                       }),
-                      SizedBox(height: 40),
+                     const SizedBox(height: 40),
                       CustomButton(
                         text: 'Register',
                         backgroundColor: Colors.orange,

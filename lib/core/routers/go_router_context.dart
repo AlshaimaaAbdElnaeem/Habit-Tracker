@@ -1,2 +1,2 @@
 const String splashView = "/";
-const String onBoarding = "/onboarding";
+const String homePage = "/homePage";

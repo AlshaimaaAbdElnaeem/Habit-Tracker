@@ -5,6 +5,7 @@ import '../../../../core/util/color.dart';
 import '../../../../core/util/custom_text_style.dart';
 import '../../../../core/util/methods.dart';
 import '../../../../core/util/strings.dart';
+import '../../../report/presentation/views/report_page.dart';
 import '../widgets/add_new_plans.dart';
 import 'package:task_project/features/navbar/presentation/widget/navbar_project.dart';
 
@@ -24,7 +25,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     // List of pages corresponding to the navigation items
     const HomePageContent(),
-    Container(color: Colors.red), // Placeholder for second page
+    ReportPage(),
     Container(color: Colors.green), // Placeholder for third page
   ];
 
@@ -77,7 +78,7 @@ class HomePageContent extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 0.0),
-        child: Column(
+        child: ListView(
           children: [
             Text(
               AppStrings.dailyTask,

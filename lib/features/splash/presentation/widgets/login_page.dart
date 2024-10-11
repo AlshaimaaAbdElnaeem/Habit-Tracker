@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:task_project/features/splash/presentation/widgets/custom_button.dart';
-import 'package:task_project/features/splash/presentation/widgets/register_page.dart';
-import 'package:task_project/features/splash/presentation/widgets/sign_in_page.dart';
-import 'package:task_project/features/splash/presentation/widgets/custom_button.dart'; // Import the button
+import 'package:task_project/features/auth/presentation/views/register_page.dart';
+import 'package:task_project/features/auth/presentation/views/sign_in_page.dart';
+
+import '../../../../core/widgets/custom_button.dart'; // Import the button
 
 class LoginPage extends StatelessWidget {
   @override
@@ -24,12 +24,12 @@ class LoginPage extends StatelessWidget {
                   color: Colors.blue[900],
                 ),
               ),
-              SizedBox(height: 20),
+             const SizedBox(height: 20),
               Container(
                 height: 200,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(60),
-                  image: DecorationImage(
+                  image:const  DecorationImage(
                     image: AssetImage('assets/images/h2.jpg'),
                     fit: BoxFit.cover,
                   ),
