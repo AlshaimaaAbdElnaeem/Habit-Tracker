@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:task_project/features/Profile/privacy_page.dart';
+import 'package:task_project/features/splash/presentation/widgets/login_page.dart';
 
 
 class ProfilePage extends StatelessWidget {
