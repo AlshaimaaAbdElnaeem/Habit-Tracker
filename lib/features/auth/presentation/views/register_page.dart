@@ -26,6 +26,10 @@ class _RegisterPageState extends State<RegisterPage> {
 @override
 void dispose() {
     // TODO: implement dispose
+  _nameController.dispose();
+  _emailController.dispose();
+  _passwordController.dispose();
+  _rePasswordController.dispose();
     super.dispose();
   }
   bool isLoading = false ;
@@ -103,7 +107,7 @@ void dispose() {
       return 'Name must contain only letters';
       }
 
-      return value;
+      return null;
       }),
       const SizedBox(height: 20),
       _buildTextField('Email', false, _emailController, (value) {
@@ -113,7 +117,7 @@ void dispose() {
       if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
       return 'Enter a valid email';
       }
-      return value;
+      return null;
       }),
       const SizedBox(height: 20),
       _buildTextField('Password', true, _passwordController, (value) {
@@ -124,7 +128,7 @@ void dispose() {
       return 'Password must be at least 8 characters long';
       }
 
-      return value ;
+      return null ;
       }),
       const SizedBox(height: 20),
       _buildTextField('Re-Password', true, _rePasswordController, (value) {
@@ -137,7 +141,7 @@ void dispose() {
       if (value.length < 8) {
       return 'Re-Password must be at least 8 characters long';
       }
-      return value;
+      return null;
       }),
       const SizedBox(height: 40),
       CustomButton(
@@ -146,11 +150,11 @@ void dispose() {
       onPressed: () {
       if (_formKey.currentState!.validate()) {
         final userdata = UserModel(
-          _nameController.text,
-          _emailController.text,
-         _passwordController.text,
+          _nameController.text.trim(),
+          _emailController.text.trim(),
+         _passwordController.text.trim(),
         );
-       BlocProvider.of<AuthCubit>(context).registerUser(userdata: userdata!);
+       BlocProvider.of<AuthCubit>(context).registerUser(userdata: userdata);
       }
       },
       ),

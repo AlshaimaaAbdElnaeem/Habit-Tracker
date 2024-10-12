@@ -26,7 +26,8 @@ String ? password ;
 bool isLoading = false ;
 @override
 void dispose() {
-    // TODO: implement dispose
+  _emailController.dispose();
+  _passwordController.dispose();
     super.dispose();
   }
   @override
@@ -115,8 +116,7 @@ void dispose() {
                           if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
                             return 'Enter a valid email';
                           }
-                          email = value ;
-                          return value;
+                          return null;
                         },
                       ),
                      const SizedBox(height: 20),
@@ -133,8 +133,7 @@ void dispose() {
                           if (value.length < 8) {
                             return 'Password must be at least 8 characters long';
                           }
-                          password = value ;
-                          return value;
+                          return null;
                         },
                       ),
                      const SizedBox(height: 30),
@@ -146,7 +145,7 @@ void dispose() {
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             // Navigate to the HomePage on successful login
-                          BlocProvider.of<AuthCubit>(context).loginUser(email: email!, password: password!);
+                          BlocProvider.of<AuthCubit>(context).loginUser(email: _emailController.text.trim(), password: _passwordController.text.trim(),);
                           }
                         },
                       ),

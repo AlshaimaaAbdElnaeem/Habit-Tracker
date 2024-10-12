@@ -23,15 +23,11 @@ class ReportPageCall extends StatefulWidget {
 class _ReportPageState extends State<ReportPageCall> {
   // Sample data for completed and incomplete tasks
   final List<String> completedTasks = [
-    'Read a book',
-    'Exercise',
-    'Meditate',
+
   ];
 
   final List<String> incompleteTasks = [
-    'Learn Flutter',
-    'Drink water',
-    'Finish project',
+
   ];
 
   double _progressValue = 0.0; // Initial progress value
@@ -67,7 +63,7 @@ class _ReportPageState extends State<ReportPageCall> {
               Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Text(
+                 const Text(
                     'Calendar',
                     style: TextStyle(fontSize: 9),
                   ),
