@@ -13,11 +13,11 @@ class AddNewPlans extends StatelessWidget {
         IconButton(
             onPressed: () {},
             icon: Icon(
-              Icons.add_box_outlined,
+              Icons.add_circle,
               color: AppColors.primaryColor,
             )),
         const Text(
-          "Add new plans",
+          "Add new habit",
           style: TextStyle(fontWeight: FontWeight.bold),
         )
       ],

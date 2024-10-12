@@ -18,9 +18,12 @@ class _HabitCardState extends State<HabitCard> {
   Color textColor = Colors.black;
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
     return Container(
       margin: const EdgeInsets.all(6),
-      width: 300,
+      width: screenWidth*0.1,
+      height: screenHeight*0.2,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           gradient: LinearGradient(
@@ -31,6 +34,7 @@ class _HabitCardState extends State<HabitCard> {
         padding: const EdgeInsets.only(left: 16.0, top: 16.0),
         child: Row(
           children: [
+            const ImageAndNextButton(),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -83,7 +87,6 @@ class _HabitCardState extends State<HabitCard> {
                 ),
               ],
             ),
-            const ImageAndNextButton()
           ],
         ),
       ),

@@ -7,10 +7,8 @@ class ListOfHabitCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 220,
+      height: MediaQuery.of(context).size.height*0.52,
       child: ListView(
-        scrollDirection: Axis.horizontal,
-        shrinkWrap: true,
         children: const [
           HabitCard(),
           HabitCard(),

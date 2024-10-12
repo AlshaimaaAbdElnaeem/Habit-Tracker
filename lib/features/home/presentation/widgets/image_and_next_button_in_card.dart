@@ -7,23 +7,17 @@ class ImageAndNextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 20.0),
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+    return Expanded(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const Image(
-            image: AssetImage(
-              "assets/images/man.jpg",
-            ),
-            width: 160,
-            height: 130,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 50.0),
-            child: IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.keyboard_double_arrow_right_outlined),
-            ),
+            Image.asset("assets/images/card_image.png",width: screenWidth*0.1,
+              height:screenHeight*0.1,),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.delete),
           ),
         ],
       ),

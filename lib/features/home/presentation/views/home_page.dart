@@ -76,56 +76,27 @@ class HomePageContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 0.0),
-        child: ListView(
-          children: [
-            Text(
-              AppStrings.dailyTask,
-              style: CustomTextStyle.titleStyle,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20.0, left: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    AppStrings.habitTitle,
-                    style: CustomTextStyle.habitTitle,
-                  ),
-                  TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        AppStrings.viewAll,
-                        style: CustomTextStyle.viewAll,
-                      )),
-                ],
-              ),
-            ),
-            const ListOfHabitCards(),
-            const AddNewPlans(),
-            const SizedBox(
-              height: 20,
-            ),
-            const Row(
+      child: Column(
+        children: [
+          Text(
+            AppStrings.dailyTask,
+            style: CustomTextStyle.titleStyle,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 20.0, left: 20),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 10.0),
-                  child: ProgressCircleWithDetails(),
+                Text(
+                  AppStrings.habitTitle,
+                  style: CustomTextStyle.habitTitle,
                 ),
-                Column(
-                  children: [
-                    TaskItem(taskName: "Morning cycling", isCompleted: true),
-                    TaskItem(taskName: "Afternoon cycling", isCompleted: false),
-                    TaskItem(taskName: "Evening cycling", isCompleted: true),
-                    TaskItem(taskName: "Night cycling", isCompleted: false),
-                  ],
-                )
+                const AddNewPlans(),
               ],
             ),
-          ],
-        ),
+          ),
+        const ListOfHabitCards(),
+        ],
       ),
     );
   }

@@ -67,14 +67,14 @@ void dispose() {
         body: Stack(
           children: [
             // Background image
-            Container(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/background.jpg'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
+            // Container(
+            //   decoration: const BoxDecoration(
+            //     image: DecorationImage(
+            //       image: AssetImage('assets/images/background.jpg'),
+            //       fit: BoxFit.cover,
+            //     ),
+            //   ),
+            // ),
             SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
