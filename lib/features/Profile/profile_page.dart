@@ -1,12 +1,71 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:task_project/features/Profile/privacy_page.dart';
-import 'package:task_project/features/splash/presentation/widgets/login_page.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
+class ProfilePage extends StatefulWidget {
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
 
-class ProfilePage extends StatelessWidget {
+class _ProfilePageState extends State<ProfilePage> {
+  File? _profileImage;
+  String? _downloadURL;
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _profileImage = File(pickedFile.path);
+      });
+      _uploadImage();
+    }
+  }
+
+  Future<void> _uploadImage() async {
+    if (_profileImage == null) return;
+    try {
+      String fileName = 'profile_images/${DateTime.now().millisecondsSinceEpoch}.png';
+
+      // رفع الصورة إلي Firebase
+      UploadTask uploadTask = FirebaseStorage.instance.ref(fileName).putFile(_profileImage!);
+
+      TaskSnapshot snapshot = await uploadTask;
+      String downloadURL = await snapshot.ref.getDownloadURL();
+
+      // تخزين رابط الصورة في Firebase
+      _saveImageURLToFirestore(downloadURL);
+
+      setState(() {
+        _downloadURL = downloadURL; // تخزين رابط التحميل لعرض الصورة
+      });
+    } catch (e) {
+      print('Error uploading image: $e');
+    }
+  }
+
+  // دالة لحفظ رابط الصورة في Firestore
+  Future<void> _saveImageURLToFirestore(String downloadURL) async {
+    User? user = FirebaseAuth.instance.currentUser; // الحصول على المستخدم الحالي
+    if (user == null) {
+      print('المستخدم غير مسجل الدخول.');
+      return; // إذا لم يكن هناك مستخدم مسجل، نخرج من الدالة
+    }
+    // تحديث ملف المستخدم في Firestore برابط الصورة الجديدة
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    await users.doc(user.uid).update({
+      'profileImage': downloadURL,
+    }).catchError((error) {
+      print('Error saving image URL to Firestore: $error');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Theme.of(context).dialogBackgroundColor,
       body: SingleChildScrollView(
@@ -14,25 +73,43 @@ class ProfilePage extends StatelessWidget {
           children: [
             Stack(
               children: [
-                // Header background with wave effect
-                Container(
-                  height: 180,
-                  decoration: const BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(30),
-                      bottomRight: Radius.circular(30),
-                    ),
-                  ),
-                ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 100, left: 20),
+                  padding: const EdgeInsets.only(top: 0, left: 20),
                   child: Row(
                     children: [
-                      const CircleAvatar(
-                        radius: 35,
-                        backgroundImage: NetworkImage(
-                            'https://i.pinimg.com/736x/79/00/69/790069604ed308a3f9ceae63f9802179.jpg'), // Replace with actual image
+                      Stack(
+                        children: [
+                          CircleAvatar(
+                            radius: 40,
+                            backgroundImage: _downloadURL != null
+                                ? NetworkImage(_downloadURL!)
+                                : const NetworkImage(
+                              'https://i.pinimg.com/originals/ac/11/aa/ac11aa2add3b0193c8769e0a17d13535.jpg',
+                            ),
+                          ),
+                          // أيقونة الكاميرا
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: GestureDetector(
+                              onTap: _pickImage,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.blue,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(5.0),
+                                  child: Icon(
+                                    Icons.camera_alt,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(width: 20),
                       Column(
@@ -43,14 +120,14 @@ class ProfilePage extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ),
                           Text(
                             'rezk888@gmail.com',
                             style: TextStyle(
                               fontSize: 16,
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ),
                         ],
@@ -74,13 +151,11 @@ class ProfilePage extends StatelessWidget {
                     child: const Text(
                       'Edit Profile',
                       style: TextStyle(
-                        color: Colors.black, // Change text color to black
+                        color: Colors.black,
                       ),
                     ),
                   ),
                   const SizedBox(height: 20),
-
-                  // Dark Mode as part of Profile Options
 
                   _buildProfileOption(
                       icon: Icons.accessibility, title: 'My habits', onTap: () {}),
@@ -91,12 +166,7 @@ class ProfilePage extends StatelessWidget {
                   _buildProfileOption(
                     icon: Icons.privacy_tip,
                     title: 'Privacy policy',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => PrivacyPolicyPage()),
-                      );
-                    },
+                    onTap: () {},
                   ),
 
                   const SizedBox(height: 20),
@@ -109,7 +179,7 @@ class ProfilePage extends StatelessWidget {
                     child: const Text(
                       'Logout',
                       style: TextStyle(
-                        color: Colors.black, // Change text color to black
+                        color: Colors.black,
                       ),
                     ),
                   ),
@@ -136,30 +206,6 @@ class ProfilePage extends StatelessWidget {
           leading: Icon(icon, color: Colors.blue),
           title: Text(title),
           trailing: const Icon(Icons.arrow_forward_ios),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDarkModeOption({
-    required IconData icon,
-    required String title,
-    required bool isDarkMode,
-    required ValueChanged<bool> onChanged,
-  }) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      elevation: 2,
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      child: ListTile(
-        leading: Icon(icon, color: Colors.blue),
-        title: Text(title),
-        trailing: Switch(
-          value: isDarkMode,
-          onChanged: onChanged,
-          activeColor: Colors.blue,
         ),
       ),
     );

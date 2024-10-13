@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_project/features/Profile/profile_page.dart';
 import 'package:task_project/features/home/presentation/widgets/list_of_habit_cards.dart';
 import 'package:task_project/features/home/presentation/widgets/task_item.dart';
 import '../../../../core/util/color.dart';
@@ -26,6 +27,7 @@ class _HomePageState extends State<HomePage> {
     // List of pages corresponding to the navigation items
     const HomePageContent(),
     ReportPage(),
+    ProfilePage(),
     Container(color: Colors.green), // Placeholder for third page
   ];
 
