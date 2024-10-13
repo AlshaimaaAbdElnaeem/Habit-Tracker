@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:task_project/core/util/color.dart';
+import 'package:task_project/features/home/presentation/views/add_new_habit.dart';
 
-class AddNewPlans extends StatelessWidget {
-  const AddNewPlans({
+class AddNewHabit extends StatelessWidget {
+  const AddNewHabit({
     super.key,
   });
 
@@ -11,7 +12,12 @@ class AddNewPlans extends StatelessWidget {
     return Row(
       children: [
         IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) =>const CreateCustomHabit()),
+              );
+            },
             icon: Icon(
               Icons.add_circle,
               color: AppColors.primaryColor,

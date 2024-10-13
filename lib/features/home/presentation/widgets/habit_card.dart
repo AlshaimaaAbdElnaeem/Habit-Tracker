@@ -34,7 +34,6 @@ class _HabitCardState extends State<HabitCard> {
         padding: const EdgeInsets.only(left: 16.0, top: 16.0),
         child: Row(
           children: [
-            const ImageAndNextButton(),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -87,6 +86,7 @@ class _HabitCardState extends State<HabitCard> {
                 ),
               ],
             ),
+            const ImageAndNextButton(),
           ],
         ),
       ),

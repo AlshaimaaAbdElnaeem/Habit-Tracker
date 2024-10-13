@@ -93,11 +93,11 @@ class HomePageContent extends StatelessWidget {
                   AppStrings.habitTitle,
                   style: CustomTextStyle.habitTitle,
                 ),
-                const AddNewPlans(),
+                const AddNewHabit(),
               ],
             ),
           ),
-        const ListOfHabitCards(),
+       const Expanded(child: ListOfHabitCards()),
         ],
       ),
     );
