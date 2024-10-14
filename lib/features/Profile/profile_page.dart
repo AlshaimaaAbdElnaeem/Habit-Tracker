@@ -4,64 +4,80 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:task_project/features/Profile/privacy_page.dart';
+import 'package:task_project/features/auth/presentation/views/sign_in_page.dart';
 
 class ProfilePage extends StatefulWidget {
+  final ValueChanged<bool> onThemeChanged; // Pass the theme change function
+
+  ProfilePage({required this.onThemeChanged});
+
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  File? _profileImage;
+  File? _imageFile;
+  final picker = ImagePicker();
   String? _downloadURL;
 
-  Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  String? _name;
+  String? _email;
 
+  // State variable for theme mode
+  bool _isDarkMode = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
+  Future<void> _fetchUserData() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DocumentSnapshot userData = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      if (userData.exists) {
+        setState(() {
+          _name = userData['name'];
+          _email = userData['email'];
+        });
+      }
+    }
+  }
+
+  Future<void> _pickImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
-        _profileImage = File(pickedFile.path);
+        _imageFile = File(pickedFile.path);
       });
-      _uploadImage();
+      await _uploadImage();
     }
   }
 
   Future<void> _uploadImage() async {
-    if (_profileImage == null) return;
-    try {
-      String fileName = 'profile_images/${DateTime.now().millisecondsSinceEpoch}.png';
-
-      // رفع الصورة إلي Firebase
-      UploadTask uploadTask = FirebaseStorage.instance.ref(fileName).putFile(_profileImage!);
-
-      TaskSnapshot snapshot = await uploadTask;
-      String downloadURL = await snapshot.ref.getDownloadURL();
-
-      // تخزين رابط الصورة في Firebase
-      _saveImageURLToFirestore(downloadURL);
-
-      setState(() {
-        _downloadURL = downloadURL; // تخزين رابط التحميل لعرض الصورة
-      });
-    } catch (e) {
-      print('Error uploading image: $e');
+    if (_imageFile != null) {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        Reference storageReference = FirebaseStorage.instance.ref().child('profile_images/${user.uid}');
+        UploadTask uploadTask = storageReference.putFile(_imageFile!);
+        TaskSnapshot snapshot = await uploadTask;
+        String downloadURL = await snapshot.ref.getDownloadURL();
+        setState(() {
+          _downloadURL = downloadURL;
+        });
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).update({'imageURL': downloadURL});
+      }
     }
   }
 
-  // دالة لحفظ رابط الصورة في Firestore
-  Future<void> _saveImageURLToFirestore(String downloadURL) async {
-    User? user = FirebaseAuth.instance.currentUser; // الحصول على المستخدم الحالي
-    if (user == null) {
-      print('المستخدم غير مسجل الدخول.');
-      return; // إذا لم يكن هناك مستخدم مسجل، نخرج من الدالة
-    }
-    // تحديث ملف المستخدم في Firestore برابط الصورة الجديدة
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
-    await users.doc(user.uid).update({
-      'profileImage': downloadURL,
-    }).catchError((error) {
-      print('Error saving image URL to Firestore: $error');
+  void _toggleDarkMode(bool isDarkMode) {
+    setState(() {
+      _isDarkMode = isDarkMode;
     });
+    // Call the callback to change the theme in the main app
+    widget.onThemeChanged(_isDarkMode);
   }
 
   @override
@@ -87,7 +103,6 @@ class _ProfilePageState extends State<ProfilePage> {
                               'https://i.pinimg.com/originals/ac/11/aa/ac11aa2add3b0193c8769e0a17d13535.jpg',
                             ),
                           ),
-                          // أيقونة الكاميرا
                           Positioned(
                             bottom: 0,
                             right: 0,
@@ -114,18 +129,18 @@ class _ProfilePageState extends State<ProfilePage> {
                       const SizedBox(width: 20),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Text(
-                            'Ahmed',
-                            style: TextStyle(
+                            _name ?? 'Loading...',
+                            style: const TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
                             ),
                           ),
                           Text(
-                            'rezk888@gmail.com',
-                            style: TextStyle(
+                            _email ?? 'Loading...',
+                            style: const TextStyle(
                               fontSize: 16,
                               color: Colors.black,
                             ),
@@ -157,8 +172,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   const SizedBox(height: 20),
 
-                  _buildProfileOption(
-                      icon: Icons.accessibility, title: 'My habits', onTap: () {}),
+                  // Dark Mode Toggle
+                  _buildDarkModeToggle(),
+
                   _buildProfileOption(
                       icon: Icons.alarm, title: 'Reminder', onTap: () {}),
                   _buildProfileOption(
@@ -166,12 +182,22 @@ class _ProfilePageState extends State<ProfilePage> {
                   _buildProfileOption(
                     icon: Icons.privacy_tip,
                     title: 'Privacy policy',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => PrivacyPolicyPage()),
+                      );
+                    },
                   ),
 
                   const SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SignInPage()),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       minimumSize: const Size(double.infinity, 40),
@@ -192,8 +218,33 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildProfileOption(
-      {required IconData icon, required String title, required VoidCallback onTap}) {
+  Widget _buildDarkModeToggle() {
+    return GestureDetector(
+      onTap: () => _toggleDarkMode(!_isDarkMode),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        elevation: 2,
+        margin: const EdgeInsets.symmetric(vertical: 10),
+        child: ListTile(
+          leading: Icon(Icons.dark_mode, color: Colors.blue),
+          title: Text('Dark Mode'),
+          trailing: Switch(
+            value: _isDarkMode,
+            onChanged: (value) {
+              _toggleDarkMode(value);
+            },
+            activeColor: Colors.black,
+            inactiveThumbColor: Colors.grey,
+            inactiveTrackColor: Colors.grey.shade300,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfileOption({required IconData icon, required String title, required Function() onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Card(
@@ -205,7 +256,6 @@ class _ProfilePageState extends State<ProfilePage> {
         child: ListTile(
           leading: Icon(icon, color: Colors.blue),
           title: Text(title),
-          trailing: const Icon(Icons.arrow_forward_ios),
         ),
       ),
     );

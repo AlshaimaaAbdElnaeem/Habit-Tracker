@@ -3,7 +3,7 @@ class UserModel {
   String _email ;
   String _password ;
 
-  UserModel(this._userName, this._email, this._password);
+  UserModel(this._userName, this._email, this._password, {String? profileImage});
 
   String get password => _password;
 

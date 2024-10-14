@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:task_project/features/auth/data/auth_cubit/auth_cubit.dart';
 import 'package:task_project/features/auth/data/auth_cubit/auth_states.dart';
 import 'package:task_project/features/auth/presentation/model_view/users_model.dart';
@@ -153,7 +155,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   _emailController.text.trim(),
                                   _passwordController.text.trim(),
                                 );
-                                BlocProvider.of<AuthCubit>(context).registerUser(userdata: userdata);
+                                _registerUser(userdata); // تعديل دالة التسجيل
                               }
                             },
                           ),
@@ -256,5 +258,29 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
       validator: validator,
     );
+  }
+
+  Future<void> _registerUser(UserModel userdata) async {
+    try {
+      // التسجيل باستخدام Firebase Authentication
+      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: userdata.email,
+        password: userdata.password,
+      );
+
+      // حفظ الاسم والبريد الإلكتروني في Firestore
+      await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
+        'name': userdata.userName,
+        'email': userdata.email,
+      });
+
+      // عرض رسالة نجاح وتوجيه المستخدم إلى الصفحة الرئيسية
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePage()),
+      );
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 }

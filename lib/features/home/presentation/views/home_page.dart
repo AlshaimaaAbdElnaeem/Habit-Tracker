@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:task_project/features/Profile/privacy_page.dart';
 import 'package:task_project/features/Profile/profile_page.dart';
 import 'package:task_project/features/home/presentation/widgets/list_of_habit_cards.dart';
 import 'package:task_project/features/home/presentation/widgets/task_item.dart';
+import 'package:task_project/main.dart';
 import '../../../../core/util/color.dart';
 import '../../../../core/util/custom_text_style.dart';
 import '../../../../core/util/methods.dart';
@@ -9,9 +11,12 @@ import '../../../../core/util/strings.dart';
 import '../../../report/presentation/views/report_page.dart';
 import '../widgets/add_new_plans.dart';
 import 'package:task_project/features/navbar/presentation/widget/navbar_project.dart';
-
-
 import '../widgets/progress_circle_details.dart';
+
+
+void onThemeChanged(bool isDarkMode) {
+  themeNotifier.value = isDarkMode ? ThemeMode.dark : ThemeMode.light;
+}
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,10 +29,10 @@ class _HomePageState extends State<HomePage> {
   int _currentIndex = 0; // Variable to track the current index
 
   final List<Widget> _pages = [
-    // List of pages corresponding to the navigation items
     const HomePageContent(),
     ReportPage(),
-    ProfilePage(),
+    ProfilePage(onThemeChanged: onThemeChanged), // تمرير الدالة
+    PrivacyPolicyPage(),
     Container(color: Colors.green), // Placeholder for third page
   ];
 
@@ -97,7 +102,7 @@ class HomePageContent extends StatelessWidget {
               ],
             ),
           ),
-       const Expanded(child: ListOfHabitCards()),
+          const Expanded(child: ListOfHabitCards()),
         ],
       ),
     );
