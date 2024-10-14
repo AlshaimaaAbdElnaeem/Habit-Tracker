@@ -130,7 +130,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             return null;
                           }),
                           const SizedBox(height: 20),
-                          _buildPasswordField('Re-Password', _rePasswordController, (value) {
+                          _buildRePasswordField('Re-Password', _rePasswordController, (value) {
                             if (value == null || value.isEmpty) {
                               return 'Re-Password is required';
                             }
@@ -217,6 +217,39 @@ class _RegisterPageState extends State<RegisterPage> {
           onPressed: () {
             setState(() {
               _isPasswordVisible = !_isPasswordVisible;
+            });
+          },
+        ),
+      ),
+      validator: validator,
+    );
+  }
+
+  Widget _buildRePasswordField(String label, TextEditingController controller, String? Function(String?) validator) {
+    return TextFormField(
+      controller: controller,
+      obscureText: !_isRePasswordVisible,
+      style: TextStyle(color: Colors.white),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+        ),
+        filled: true,
+        fillColor: Colors.blue[700]!.withOpacity(0.8),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide.none,
+        ),
+        suffixIcon: IconButton(
+          icon: Icon(
+            _isRePasswordVisible ? Icons.visibility : Icons.visibility_off,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            setState(() {
+              _isRePasswordVisible = !_isRePasswordVisible;
             });
           },
         ),
