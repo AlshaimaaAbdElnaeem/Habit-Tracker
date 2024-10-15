@@ -4,9 +4,9 @@ import 'package:task_project/features/home/presentation/views/add_new_habit.dart
 
 class AddNewHabit extends StatelessWidget {
   const AddNewHabit({
-    super.key,
+    super.key, required this.userEmail,
   });
-
+final String userEmail;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -15,7 +15,7 @@ class AddNewHabit extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) =>const CreateCustomHabit()),
+                MaterialPageRoute(builder: (context) => CreateCustomHabit(userId: userEmail,)),
               );
             },
             icon: Icon(

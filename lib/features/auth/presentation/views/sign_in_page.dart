@@ -6,6 +6,7 @@ import 'package:task_project/features/home/presentation/views/home_page.dart';
 import 'package:task_project/features/auth/presentation/views/register_page.dart'; // Import the register page
 
 import '../../../../core/functions/show_snack_bar.dart';
+import '../../../../core/util/color.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../data/auth_cubit/auth_states.dart';
 
@@ -38,7 +39,7 @@ class _SignInPageState extends State<SignInPage> {
           setState(() => isLoading = false);
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const HomePage()),
+            MaterialPageRoute(builder: (context) =>  HomePage(userEmail:_emailController.text.trim() ,)),
           );
         } else if (state is LoginFailure) {
           setState(() => isLoading = false);
@@ -194,7 +195,7 @@ class _SignInPageState extends State<SignInPage> {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide(
-            color: Colors.orange[300]!,
+            color: AppColors.primaryColor,
             width: 2,
           ),
         ),

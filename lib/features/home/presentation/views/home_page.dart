@@ -19,22 +19,26 @@ void onThemeChanged(bool isDarkMode) {
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
+  const HomePage({super.key, required this.userEmail});
+final String userEmail ;
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  late final List<Widget> _pages;
   int _currentIndex = 0; // Variable to track the current index
-
-  final List<Widget> _pages = [
-    const HomePageContent(),
+@override
+  void initState() {
+    _pages = [
+    HomePageContent(userEmail:widget.userEmail),
     ReportPage(),
     ProfilePage(onThemeChanged: onThemeChanged), // تمرير الدالة
     PrivacyPolicyPage(),
-    Container(color: Colors.green), // Placeholder for third page
+    // Placeholder for third page
   ];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +68,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      body: _pages[_currentIndex], // Show the current page based on the index
+      body:_pages[_currentIndex], // Show the current page based on the index
       bottomNavigationBar: NavBarProject(
         onTap: (index) {
           setState(() {
@@ -77,8 +81,8 @@ class _HomePageState extends State<HomePage> {
 }
 
 class HomePageContent extends StatelessWidget {
-  const HomePageContent({super.key});
-
+  const HomePageContent({super.key, required this.userEmail});
+final String userEmail ;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -98,7 +102,7 @@ class HomePageContent extends StatelessWidget {
                   AppStrings.habitTitle,
                   style: CustomTextStyle.habitTitle,
                 ),
-                const AddNewHabit(),
+                 AddNewHabit(userEmail:userEmail),
               ],
             ),
           ),

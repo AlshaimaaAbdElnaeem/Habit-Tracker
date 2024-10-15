@@ -4,8 +4,8 @@ class Habit {
   String id;
   String title;
   bool isCompleted;
-  DateTime createdAt;
-  DateTime practiceTime;
+  String createdAt;
+  String practiceTime;
 
   Habit({required this.id, required this.title, this.isCompleted = false, required this.createdAt, required this.practiceTime,});
 
@@ -15,8 +15,8 @@ class Habit {
       'id': id,
       'title': title,
       'isCompleted': isCompleted,
-      'createdAt': createdAt.toIso8601String(),
-      'practiceTime': practiceTime.toIso8601String(),
+      'createdAt': createdAt,
+      'practiceTime': practiceTime,
     };
   }
 
@@ -26,8 +26,8 @@ class Habit {
       id: id,
       title: map['title'],
       isCompleted: map['isCompleted'],
-      createdAt: DateTime.parse(map['createdAt']),
-      practiceTime: DateTime.parse(map['practiceTime']),
+      createdAt: DateTime.parse(map['createdAt']).toString(),
+      practiceTime: DateTime.parse(map['practiceTime']).toString(),
     );
   }
 
@@ -37,9 +37,9 @@ class Habit {
     CollectionReference habitsCollection = FirebaseFirestore.instance.collection('habits');
 
     Habit habit = Habit(
-      id: habitsCollection.doc().id, // creating an automatic id
+      id: id, // creating an automatic id
       title: title,
-      createdAt: DateTime.now(),
+      createdAt: DateTime.now().toString(),
       practiceTime: practiceTime,
     );
 

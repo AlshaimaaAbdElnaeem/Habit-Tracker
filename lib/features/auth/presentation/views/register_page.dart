@@ -48,7 +48,7 @@ class _RegisterPageState extends State<RegisterPage> {
           isLoading = false;
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const HomePage()),
+            MaterialPageRoute(builder: (context) =>  HomePage(userEmail:_emailController.text.trim() ,),),
           );
         } else if (state is RegisterFailure) {
           isLoading = false;
@@ -147,7 +147,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           const SizedBox(height: 40),
                           CustomButton(
                             text: 'Register',
-                            backgroundColor: Colors.grey,
+                            backgroundColor: Colors.blue[900]!,
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 final userdata = UserModel(
@@ -155,7 +155,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   _emailController.text.trim(),
                                   _passwordController.text.trim(),
                                 );
-                                _registerUser(userdata); // تعديل دالة التسجيل
+                                BlocProvider.of<AuthCubit>(context).registerUser(userdata: userdata);
                               }
                             },
                           ),
@@ -258,29 +258,5 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
       validator: validator,
     );
-  }
-
-  Future<void> _registerUser(UserModel userdata) async {
-    try {
-      // التسجيل باستخدام Firebase Authentication
-      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: userdata.email,
-        password: userdata.password,
-      );
-
-      // حفظ الاسم والبريد الإلكتروني في Firestore
-      await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
-        'name': userdata.userName,
-        'email': userdata.email,
-      });
-
-      // عرض رسالة نجاح وتوجيه المستخدم إلى الصفحة الرئيسية
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
-      );
-    } catch (e) {
-      print('Error: $e');
-    }
   }
 }

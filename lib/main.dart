@@ -58,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _pageIndex = 0;
 
   final List<Widget> _pages = [
-    const HomePage(),
+    const HomePage(userEmail: '',),
     ReportPage(),
     ProfilePage(
       onThemeChanged: (bool isDarkMode) {
