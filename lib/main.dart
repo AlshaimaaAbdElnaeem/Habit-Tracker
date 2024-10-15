@@ -61,8 +61,8 @@ class _HomeScreenState extends State<HomeScreen> {
     const HomePage(),
     ReportPage(),
     ProfilePage(
-      onThemeChanged: (isDarkMode) {
-        themeNotifier.value = isDarkMode ? ThemeMode.dark : ThemeMode.light;
+      onThemeChanged: (bool isDarkMode) {
+
       },
     ),
   ];

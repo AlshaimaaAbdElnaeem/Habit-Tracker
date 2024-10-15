@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:task_project/features/Profile/edit_profile.dart';
 import 'package:task_project/features/Profile/privacy_page.dart';
 import 'package:task_project/features/auth/presentation/views/sign_in_page.dart';
 
@@ -158,7 +159,12 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Column(
                 children: [
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>EditProfilePage()),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       minimumSize: const Size(double.infinity, 40),
