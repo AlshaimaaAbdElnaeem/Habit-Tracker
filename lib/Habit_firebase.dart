@@ -5,8 +5,9 @@ class Habit {
   String title;
   bool isCompleted;
   DateTime createdAt;
+  DateTime practiceTime;
 
-  Habit({required this.id, required this.title, this.isCompleted = false, required this.createdAt});
+  Habit({required this.id, required this.title, this.isCompleted = false, required this.createdAt, required this.practiceTime,});
 
   //Converting habit into a storable data in Firestore
   Map<String, dynamic> toMap() {
@@ -15,6 +16,7 @@ class Habit {
       'title': title,
       'isCompleted': isCompleted,
       'createdAt': createdAt.toIso8601String(),
+      'practiceTime': practiceTime.toIso8601String(),
     };
   }
 
@@ -25,6 +27,7 @@ class Habit {
       title: map['title'],
       isCompleted: map['isCompleted'],
       createdAt: DateTime.parse(map['createdAt']),
+      practiceTime: DateTime.parse(map['practiceTime']),
     );
   }
 
@@ -37,6 +40,7 @@ class Habit {
       id: habitsCollection.doc().id, // creating an automatic id
       title: title,
       createdAt: DateTime.now(),
+      practiceTime: practiceTime,
     );
 
     await habitsCollection.doc(habit.id).set(habit.toMap());
@@ -61,5 +65,16 @@ class Habit {
       'isCompleted': isCompleted,
     });
   }
+
+  void updateHabitPracticeTime(String habitId, DateTime newPracticeTime) {
+    FirebaseFirestore.instance.collection('habits').doc(habitId).update({
+      'practiceTime': newPracticeTime.toIso8601String(),
+    }).then((_) {
+      print('Habit practice time updated successfully.');
+    }).catchError((error) {
+      print('Failed to update habit: $error');
+    });
+  }
+
 
 }
