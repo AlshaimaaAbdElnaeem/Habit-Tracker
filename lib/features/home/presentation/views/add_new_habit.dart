@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_project/Habit_firebase.dart';
@@ -110,7 +111,7 @@ class _CreateCustomHabitState extends State<CreateCustomHabit> {
                     padding: const EdgeInsets.only(top:20.0),
                     child: CustomButton(text: 'Continue', onPressed:(){
                       print(widget.userId);
-                      Habit newHabit=new Habit(id:widget.userId, title: _taskName.text.trim(), practiceTime: _timeController.text.trim().toString(), createdAt: DateTime.now().toIso8601String(),);
+                      Habit newHabit=new Habit(userId:widget.userId, title: _taskName.text.trim(), practiceTime: _timeController.text.trim().toString(), createdAt: Timestamp.now());
                       newHabit.addHabit(_taskName.text.trim() ,_timeController.text.trim());
                       _showCardDialog(context);
                     } ),

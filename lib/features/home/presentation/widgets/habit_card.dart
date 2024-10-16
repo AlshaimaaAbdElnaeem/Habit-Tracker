@@ -4,7 +4,6 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:task_project/core/functions/show_snack_bar.dart';
 import 'package:task_project/core/util/color.dart';
 import 'package:task_project/core/util/custom_text_style.dart';
-import 'package:task_project/core/util/strings.dart';
 import 'package:task_project/features/home/data/habit_states.dart';
 import 'package:task_project/features/home/presentation/widgets/image_and_next_button_in_card.dart';
 
@@ -19,10 +18,6 @@ final String habitId;
 }
 
 class _HabitCardState extends State<HabitCard> {
-  Icon completeIcon = Icon(Icons.error, color: AppColors.primaryColor);
-  String status = "Pending";
-  Color statusColor = Colors.white;
-  Color textColor = Colors.black;
    List<Habit> habit =[];
   bool isLoading = false ;
   @override
@@ -40,9 +35,12 @@ if (state is HabitError){
 }else if(state is HabitsLoaded){
    isLoading = false ;
    habit = state.habits;
+}else if (state is HabitsUpdatedSuccessfully){
+  BlocProvider.of<HabitCubit>(context).fetchHabitsById(widget.habitId);
 }
       },
       builder: (context , state) {
+
         return SizedBox(
           height: MediaQuery.of(context).size.height*0.52,
           child: ModalProgressHUD(
@@ -79,40 +77,55 @@ if (state is HabitError){
                             height: 20,
                           ),
                           Text(
-                            habit[index].createdAt,
+                            '${habit[index].createdAt.toDate()}',
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           GestureDetector(
                             onTap: () {
                               setState(() {
-                                statusColor = AppColors.primaryColor;
-                                status = "Completed";
-                                textColor = Colors.white;
-                                completeIcon = const Icon(
-                                  Icons.check_circle_rounded,
-                                  color: Colors.white,
-                                );
+                                BlocProvider.of<HabitCubit>(context).updateHabit(habit[index].habitId, !habit[index].isCompleted);
                               });
                             },
-                            child: Container(
+                            child:habit[index].isCompleted ==false ? Container(
                               margin: const EdgeInsets.only(top: 8.0),
                               width: 100,
                               height: 35,
                               decoration: BoxDecoration(
-                                color: statusColor,
+                                color: Colors.white,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  completeIcon,
-                                  Text(
-                                    status,
-                                    style: TextStyle(color: textColor),
+                                  Icon(Icons.error, color: AppColors.primaryColor),
+                                 const Text(
+                                    "Pending",
+                                    style: TextStyle(color: Colors.black),
                                   ),
                                 ],
                               ),
-                            ),
+                            ) : Container(
+                          margin: const EdgeInsets.only(top: 8.0),
+                  width: 100,
+                  height: 35,
+                  decoration: BoxDecoration(
+                    color:  AppColors.primaryColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child:const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children:  [
+                   Icon(
+                    Icons.check_circle_rounded,
+                   color:Colors.white,
+                   ),
+                       Text(
+                        "Completed",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ) ,
                           ),
                         ],
                       ),

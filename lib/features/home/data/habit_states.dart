@@ -11,7 +11,7 @@ class HabitsLoaded extends HabitStates {
   HabitsLoaded(this.habits);
 
 }
-
+class HabitsUpdatedSuccessfully extends HabitStates {}
 class HabitError extends HabitStates {
   final String error;
 
