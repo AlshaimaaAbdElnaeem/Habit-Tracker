@@ -10,7 +10,7 @@ class HabitCubit extends Cubit<HabitStates> {
   final CollectionReference habitsCollection =
   FirebaseFirestore.instance.collection('habits');
 
-  // جلب العادات حسب ID ثم ترتيبها برمجيًا حسب `createAt`
+  // Fetch habits by user ID and sort them programmatically by `createdAt`
   Future<void> fetchHabitsById(String id) async {
     try {
       emit(HabitsLoading());
@@ -32,16 +32,62 @@ class HabitCubit extends Cubit<HabitStates> {
     }
   }
 
-  // تحديث حالة العادة
+  // Fetch only completed habits by user ID
+  Future<void> fetchCompletedHabitsById(String id) async {
+    try {
+      emit(HabitsLoading());
+      QuerySnapshot querySnapshot = await habitsCollection
+          .where('userId', isEqualTo: id)
+          .where('isCompleted', isEqualTo: true)
+          .get();
+
+      List<Habit> habits = querySnapshot.docs.map((doc) {
+        return Habit.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+      }).toList();
+      habits.sort((a, b) {
+        return b.createdAt.compareTo(a.createdAt);
+      });
+
+      emit(HabitsCompleted(habits));
+    } catch (e) {
+      print(e.toString());
+      emit(HabitError(e.toString()));
+    }
+  }
+
+  // Fetch only uncompleted habits by user ID
+  Future<void> fetchUncompletedHabitsById(String id) async {
+    try {
+      emit(HabitsLoading());
+      QuerySnapshot querySnapshot = await habitsCollection
+          .where('userId', isEqualTo: id)
+          .where('isCompleted', isEqualTo: false)
+          .get();
+
+      List<Habit> habits = querySnapshot.docs.map((doc) {
+        return Habit.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+      }).toList();
+      habits.sort((a, b) {
+        return b.createdAt.compareTo(a.createdAt);
+      });
+
+      emit(HabitsUncompleted(habits));
+    } catch (e) {
+      print(e.toString());
+      emit(HabitError(e.toString()));
+    }
+  }
+
+  // Update the habit's completion status
   Future<void> updateHabit(String id, bool isCompleted) async {
     try {
-      // استعلام لتحديث العادة بناءً على habitId
+      // Query to update habit based on habitId
       QuerySnapshot querySnapshot = await habitsCollection
           .where('habitId', isEqualTo: id)
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        // إذا تم العثور على العادة، قم بالتحديث
+        // If the habit is found, update it
         await habitsCollection.doc(querySnapshot.docs.first.id).update({
           'isCompleted': isCompleted,
         });
@@ -55,7 +101,6 @@ class HabitCubit extends Cubit<HabitStates> {
       print(e.toString());
       emit(HabitError(e.toString()));
     }
-
   }
 
   @override

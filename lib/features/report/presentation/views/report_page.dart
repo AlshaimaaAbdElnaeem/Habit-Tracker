@@ -15,14 +15,7 @@ class ReportPageCall extends StatefulWidget {
 }
 
 class _ReportPageState extends State<ReportPageCall> {
-  final List<String> completedTasks = [
-    'Read a book',
-    'Exercise',
-    'Meditate',
-    'Learn Flutter',
-    'Drink water',
-    'Finish project',
-  ];
+  final List<String> completedTasks = [];
 
   final List<String> incompleteTasks = [];
 

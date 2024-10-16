@@ -6,7 +6,7 @@ class Habit {
   bool isCompleted;
   Timestamp createdAt;
   String practiceTime;
-  String habitId; // معرف العادة
+  String habitId; // Habit ID
 
   Habit({
     required this.userId,
@@ -14,21 +14,21 @@ class Habit {
     this.isCompleted = false,
     required this.practiceTime,
     required this.createdAt,
-  }) : habitId = ''; // تعيين habitId كقيمة فارغة بشكل افتراضي
+  }) : habitId = ''; // Set habitId to an empty value by default
 
-  // تحويل الكائن إلى خريطة لتخزينه في Firestore
+  // Convert the object to a map for storing it in Firestore
   Map<String, dynamic> toMap() {
     return {
       'userId': userId,
-      'habitId': habitId, // إضافة habitId هنا
+      'habitId': habitId, // Add habitId here
       'title': title,
       'isCompleted': isCompleted,
-      'createdAt': createdAt, // تخزين Timestamp مباشرة
+      'createdAt': createdAt, // Store Timestamp directly
       'practiceTime': practiceTime,
     };
   }
 
-  // إنشاء Habit من Firestore document
+  // Create Habit from Firestore document
   factory Habit.fromMap(Map<String, dynamic> map, String id) {
     return Habit(
       userId: map['userId'] ?? '',
@@ -36,24 +36,24 @@ class Habit {
       isCompleted: map['isCompleted'] ?? false,
       createdAt: map['createdAt'] ?? Timestamp.now(),
       practiceTime: map['practiceTime'] ?? '',
-    )..habitId = id; // تعيين habitId من الوثيقة عند التحويل
+    )..habitId = id; // Set habitId from the document during conversion
   }
 
-  // إضافة Habit جديد إلى Firestore
+  // Add a new Habit to Firestore
   Future<void> addHabit(String title, String practiceTime) async {
     CollectionReference habitsCollection =
     FirebaseFirestore.instance.collection('habits');
 
-    String newId = habitsCollection.doc().id; // الحصول على ID جديد
+    String newId = habitsCollection.doc().id; // Get a new ID
 
     Habit habit = Habit(
       userId: userId,
       title: title,
-      createdAt: Timestamp.now(), // استخدام Timestamp
+      createdAt: Timestamp.now(), // Use Timestamp
       practiceTime: practiceTime,
     );
 
-    habit.habitId = newId; // تعيين habitId للمعرف الجديد
+    habit.habitId = newId; // Set habitId for the new ID
 
     try {
       await habitsCollection.doc(newId).set(habit.toMap());
@@ -62,7 +62,7 @@ class Habit {
     }
   }
 
-  // استرجاع جميع العادات
+  // Retrieve all habits
   Future<List<Habit>> getHabits() async {
     CollectionReference habitsCollection =
     FirebaseFirestore.instance.collection('habits');
@@ -73,12 +73,12 @@ class Habit {
     }).toList();
   }
 
-  // حذف Habit حسب id
+  // Delete Habit by id
   Future<void> deleteHabit(String id) async {
     await FirebaseFirestore.instance.collection('habits').doc(id).delete();
   }
 
-  // تحديث Habit حسب id
+  // Update Habit by id
   Future<void> updateHabit(String id, String newTitle, bool isCompleted) async {
     await FirebaseFirestore.instance.collection('habits').doc(id).update({
       'title': newTitle,
