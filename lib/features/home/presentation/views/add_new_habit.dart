@@ -114,6 +114,8 @@ class _CreateCustomHabitState extends State<CreateCustomHabit> {
                       Habit newHabit=new Habit(userId:widget.userId, title: _taskName.text.trim(), practiceTime: _timeController.text.trim().toString(), createdAt: Timestamp.now());
                       newHabit.addHabit(_taskName.text.trim() ,_timeController.text.trim());
                       _showCardDialog(context);
+                      _timeController.clear();
+                      _taskName.clear();
                     } ),
                   ),
                 ],
