@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'Habit_firebase.dart';
 
 Stream<List<Habit>> habitStream() {

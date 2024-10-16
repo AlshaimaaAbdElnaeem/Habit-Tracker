@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_project/Habit_firebase.dart';
+import 'package:task_project/features/home/presentation/views/home_page.dart';
 
 import '../../../../core/util/color.dart';
 import '../../../../core/util/methods.dart';
@@ -15,22 +17,7 @@ final String userId ;
 final TextEditingController _taskName = TextEditingController();
  final TextEditingController _timeController = TextEditingController();
 final _formKey = GlobalKey<FormState>();
-TextEditingController _dateController = TextEditingController();
 class _CreateCustomHabitState extends State<CreateCustomHabit> {
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-
-    if (picked != null) {
-      setState(() {
-        _dateController.text = "${picked.year}-${picked.month}-${picked.day}";
-      });
-    }
-  }
   Future<void> _selectTime(BuildContext context) async {
     TimeOfDay? picked = await showTimePicker(
       context: context,
@@ -118,42 +105,13 @@ class _CreateCustomHabitState extends State<CreateCustomHabit> {
                   onTap: () => _selectTime(context),
                 ),
               ),
-                  Padding(
-                    padding: const EdgeInsets.only(left:16.0 , right: 16.0 , bottom: 16.0),
-                    child: TextField(
-                      controller:_dateController ,
-                      readOnly: true,
-                      decoration: InputDecoration(
-                        labelText: "Habit's Date",
-                        fillColor: Colors.white.withOpacity(0.8),
-                        labelStyle: TextStyle(color: Colors.blue[900]),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide: BorderSide(
-                              color: Colors.blue[900]!, // Border color
-                              width: 2,)),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide(
-                            color: Colors.blue[400]!, // Enabled border color
-                            width: 2,),),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide(
-                            color: AppColors.primaryColor, // Focused border color
-                            width: 2,
-                          ),
-                        ),
-                      ),
-                      onTap: () => _selectDate(context),
-                    ),
-                  ),
+
                   Padding(
                     padding: const EdgeInsets.only(top:20.0),
                     child: CustomButton(text: 'Continue', onPressed:(){
                       print(widget.userId);
-                      Habit newHabit=new Habit(id:widget.userId, title: _taskName.text.trim(), createdAt: _dateController.text.trim().toString(), practiceTime: _timeController.text.trim().toString(),);
-                      newHabit.addHabit(_taskName.text.trim());
+                      Habit newHabit=new Habit(id:widget.userId, title: _taskName.text.trim(), practiceTime: _timeController.text.trim().toString(), createdAt: DateTime.now().toIso8601String(),);
+                      newHabit.addHabit(_taskName.text.trim() ,_timeController.text.trim());
                       _showCardDialog(context);
                     } ),
                   ),
@@ -235,7 +193,11 @@ class _CreateCustomHabitState extends State<CreateCustomHabit> {
             Center(
               child: TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop(); // إغلاق الـ Dialog
+                  Navigator.of(context).pop();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) =>  HomePage(userEmail:widget.userId)),
+                  );
                 },
                 child:const Text('ok'),
               ),

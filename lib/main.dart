@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:task_project/features/home/data/habit_cubit.dart';
 import 'package:task_project/features/home/presentation/views/home_page.dart';
 import 'package:task_project/features/report/presentation/views/report_page.dart';
 import 'package:task_project/features/navbar/presentation/widget/navbar_project.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
         BlocProvider<AuthCubit>(
           create: (context) => AuthCubit(InitialState()),
         ),
+        BlocProvider<HabitCubit>(create: (context)=>HabitCubit())
       ],
       child: ValueListenableBuilder<ThemeMode>(
         valueListenable: themeNotifier,

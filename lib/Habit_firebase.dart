@@ -4,50 +4,60 @@ class Habit {
   String id;
   String title;
   bool isCompleted;
-  String createdAt;
+  String createdAt ;
   String practiceTime;
 
-  Habit({required this.id, required this.title, this.isCompleted = false, required this.createdAt, required this.practiceTime,});
+  Habit({
+    required this.id,
+    required this.title,
+    this.isCompleted = false,
+    required this.practiceTime,
+    required this.createdAt ,
+  });
 
-  //Converting habit into a storable data in Firestore
+  // تحويل الكائن إلى خريطة لتخزينه في Firestore
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'title': title,
       'isCompleted': isCompleted,
-      'createdAt': createdAt,
+      'createdAt': DateTime.now().toIso8601String(),
       'practiceTime': practiceTime,
     };
   }
 
-  //Creating the habit object from Firestore document
+  // إنشاء Habit من Firestore document
   factory Habit.fromMap(Map<String, dynamic> map, String id) {
     return Habit(
       id: id,
-      title: map['title'],
-      isCompleted: map['isCompleted'],
-      createdAt: DateTime.parse(map['createdAt']).toString(),
-      practiceTime: DateTime.parse(map['practiceTime']).toString(),
+      title: map['title'] ?? '',
+      isCompleted: map['isCompleted'] ?? false,
+      createdAt: map["createdAt"]??"",
+      practiceTime: map['practiceTime'] ?? '',
     );
   }
 
+  // إضافة Habit جديد إلى Firestore
+  Future<void> addHabit(String title, String practiceTime) async {
+    CollectionReference habitsCollection =
+    FirebaseFirestore.instance.collection('habits');
 
-
-  void addHabit(String title) async {
-    CollectionReference habitsCollection = FirebaseFirestore.instance.collection('habits');
+    String newId = habitsCollection.doc().id;
 
     Habit habit = Habit(
-      id: id, // creating an automatic id
+      id: id,
       title: title,
-      createdAt: DateTime.now().toString(),
+      createdAt: DateTime.now().toIso8601String(),
       practiceTime: practiceTime,
     );
 
-    await habitsCollection.doc(habit.id).set(habit.toMap());
+    await habitsCollection.doc(newId).set(habit.toMap());
   }
 
+  // جلب جميع الـ Habits
   Future<List<Habit>> getHabits() async {
-    CollectionReference habitsCollection = FirebaseFirestore.instance.collection('habits');
+    CollectionReference habitsCollection =
+    FirebaseFirestore.instance.collection('habits');
     QuerySnapshot querySnapshot = await habitsCollection.get();
 
     return querySnapshot.docs.map((doc) {
@@ -55,19 +65,22 @@ class Habit {
     }).toList();
   }
 
-  void deleteHabit(String id) async {
+  // حذف Habit حسب id
+  Future<void> deleteHabit(String id) async {
     await FirebaseFirestore.instance.collection('habits').doc(id).delete();
   }
 
-  void updateHabit(String id, String newTitle, bool isCompleted) async {
+  // تحديث Habit حسب id
+  Future<void> updateHabit(String id, String newTitle, bool isCompleted) async {
     await FirebaseFirestore.instance.collection('habits').doc(id).update({
       'title': newTitle,
       'isCompleted': isCompleted,
     });
   }
 
-  void updateHabitPracticeTime(String habitId, DateTime newPracticeTime) {
-    FirebaseFirestore.instance.collection('habits').doc(habitId).update({
+  // تحديث وقت التدريب في Habit
+  Future<void> updateHabitPracticeTime(String habitId, DateTime newPracticeTime) async {
+    await FirebaseFirestore.instance.collection('habits').doc(habitId).update({
       'practiceTime': newPracticeTime.toIso8601String(),
     }).then((_) {
       print('Habit practice time updated successfully.');
@@ -75,6 +88,4 @@ class Habit {
       print('Failed to update habit: $error');
     });
   }
-
-
 }

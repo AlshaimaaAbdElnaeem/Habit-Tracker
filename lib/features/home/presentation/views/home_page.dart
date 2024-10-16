@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_project/features/Profile/privacy_page.dart';
 import 'package:task_project/features/Profile/profile_page.dart';
+import 'package:task_project/features/home/data/habit_cubit.dart';
 import 'package:task_project/features/home/presentation/widgets/list_of_habit_cards.dart';
 import 'package:task_project/features/home/presentation/widgets/task_item.dart';
 import 'package:task_project/main.dart';
@@ -11,6 +13,7 @@ import '../../../../core/util/strings.dart';
 import '../../../report/presentation/views/report_page.dart';
 import '../widgets/add_new_plans.dart';
 import 'package:task_project/features/navbar/presentation/widget/navbar_project.dart';
+import '../widgets/habit_card.dart';
 import '../widgets/progress_circle_details.dart';
 
 
@@ -85,30 +88,34 @@ class HomePageContent extends StatelessWidget {
 final String userEmail ;
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        children: [
-          Text(
-            AppStrings.dailyTask,
-            style: CustomTextStyle.titleStyle,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 20.0, left: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  AppStrings.habitTitle,
-                  style: CustomTextStyle.habitTitle,
+    return BlocProvider<HabitCubit>(
+      create:(context) => HabitCubit()..fetchHabitsById(userEmail),
+      child:Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            children: [
+              Text(
+                AppStrings.dailyTask,
+                style: CustomTextStyle.titleStyle,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0, left: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      AppStrings.habitTitle,
+                      style: CustomTextStyle.habitTitle,
+                    ),
+                     AddNewHabit(userEmail:userEmail),
+                  ],
                 ),
-                 AddNewHabit(userEmail:userEmail),
-              ],
-            ),
+              ),
+              Expanded(child: HabitCard(habitId : userEmail)),
+            ],
           ),
-          const Expanded(child: ListOfHabitCards()),
-        ],
-      ),
+        ),
+
     );
   }
 }
