@@ -101,7 +101,7 @@ class _ReportPageState extends State<ReportPageCall> {
                           children: [
                             ClipOval(
                               child: Image.asset(
-                                'images/cup.png', // Cup image
+                                'assets/images/cup.png', // Cup image
                                 width: 70, // Increase image width
                                 height: 70, // Increase image height
                                 fit: BoxFit.cover,

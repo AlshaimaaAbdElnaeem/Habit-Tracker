@@ -36,11 +36,11 @@ if (state is HabitError){
    isLoading = false ;
    habit = state.habits;
 }else if (state is HabitsUpdatedSuccessfully){
-  BlocProvider.of<HabitCubit>(context).fetchHabitsById(widget.habitId);
+  BlocProvider.of<HabitCubit>(context).fetchHabitsById(widget.habitId , DateTime.now().toLocal().toIso8601String().split(
+      'T')[0] );
 }
       },
       builder: (context , state) {
-
         return SizedBox(
           height: MediaQuery.of(context).size.height*0.52,
           child: ModalProgressHUD(
@@ -77,7 +77,7 @@ if (state is HabitError){
                             height: 20,
                           ),
                           Text(
-                            '${habit[index].createdAt.toDate()}',
+                            '${habit[index].createdAt.toDate().toIso8601String().split('T')[0]}',
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           GestureDetector(
@@ -129,7 +129,25 @@ if (state is HabitError){
                           ),
                         ],
                       ),
-                      const ImageAndNextButton(),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Image.asset("assets/images/card_image.png",width: screenWidth*0.1,
+                          height:screenHeight*0.1,),
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              habit[index].deleteHabit(habit[index].habitId);
+                              BlocProvider.of<HabitCubit>(context).fetchHabitsById(widget.habitId , DateTime.now().toLocal().toIso8601String().split(
+                                  'T')[0] );
+                            });
+                          },
+                          icon: const Icon(Icons.delete),
+                        ),
+                      ],
+                    ),
+                  ),
                     ],
                   ),
                 ),

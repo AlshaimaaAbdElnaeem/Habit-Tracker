@@ -41,6 +41,7 @@ class _HomePageState extends State<HomePage> {
     // Placeholder for third page
   ];
     super.initState();
+    BlocProvider.of<HabitCubit>(context).resetHabitsIfNewDay(widget.userEmail);
   }
 
   @override
@@ -89,7 +90,8 @@ final String userEmail ;
   @override
   Widget build(BuildContext context) {
     return BlocProvider<HabitCubit>(
-      create:(context) => HabitCubit()..fetchHabitsById(userEmail),
+      create:(context) => HabitCubit()..fetchHabitsById(userEmail, DateTime.now().toLocal().toIso8601String().split(
+          'T')[0]),
       child:Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(

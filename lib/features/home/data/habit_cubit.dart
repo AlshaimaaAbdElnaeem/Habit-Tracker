@@ -10,12 +10,12 @@ class HabitCubit extends Cubit<HabitStates> {
   final CollectionReference habitsCollection =
   FirebaseFirestore.instance.collection('habits');
 
-  // Fetch habits by user ID and sort them programmatically by `createdAt`
-  Future<void> fetchHabitsById(String id) async {
+  Future<void> fetchHabitsById(String id, String dateString) async {
     try {
       emit(HabitsLoading());
       QuerySnapshot querySnapshot = await habitsCollection
           .where('userId', isEqualTo: id)
+          .where('date', isEqualTo: dateString) // استخدم التاريخ المحدد
           .get();
 
       List<Habit> habits = querySnapshot.docs.map((doc) {
@@ -24,13 +24,14 @@ class HabitCubit extends Cubit<HabitStates> {
       habits.sort((a, b) {
         return b.createdAt.compareTo(a.createdAt);
       });
-
       emit(HabitsLoaded(habits));
     } catch (e) {
       print(e.toString());
       emit(HabitError(e.toString()));
     }
   }
+
+
 
   // Fetch only completed habits by user ID
   Future<void> fetchCompletedHabitsById(String id) async {
@@ -78,10 +79,9 @@ class HabitCubit extends Cubit<HabitStates> {
     }
   }
 
-  // Update the habit's completion status
+
   Future<void> updateHabit(String id, bool isCompleted) async {
     try {
-      // Query to update habit based on habitId
       QuerySnapshot querySnapshot = await habitsCollection
           .where('habitId', isEqualTo: id)
           .get();
@@ -101,6 +101,47 @@ class HabitCubit extends Cubit<HabitStates> {
       print(e.toString());
       emit(HabitError(e.toString()));
     }
+  }
+
+  Future<void> resetHabitsIfNewDay(String userId) async {
+    CollectionReference habitsCollection = FirebaseFirestore.instance.collection('habits');
+    DateTime today = DateTime.now().toLocal();
+    String todayString = today.toIso8601String().split('T')[0];
+
+
+    QuerySnapshot previousHabitsSnapshot = await habitsCollection
+        .where('userId', isEqualTo: userId)
+        .where('date', isEqualTo: todayString)
+        .get();
+    if (previousHabitsSnapshot.docs.isEmpty) {
+
+      QuerySnapshot previousDateSnapshot = await habitsCollection
+          .where('userId', isEqualTo: userId)
+          .where('date', isEqualTo: today.subtract(Duration(days: 1)).toIso8601String().split('T')[0])
+          .get();
+
+      for (var doc in previousDateSnapshot.docs) {
+        Habit habit = Habit.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+
+        if (habit.isCompleted) {
+          Habit newHabit = Habit(
+            userId: habit.userId,
+            title: habit.title,
+            isCompleted: false,
+            practiceTime: habit.practiceTime,
+            createdAt: Timestamp.now(),
+            date: todayString,
+            habitId: habit.habitId,
+          );
+
+          await habitsCollection.add(newHabit.toMap());
+        }
+      }
+    }
+  }
+
+  Future<void> deleteHabit(String id) async {
+    await FirebaseFirestore.instance.collection('habits').doc(id).delete();
   }
 
   @override

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:task_project/features/home/data/habit_cubit.dart';
 
 class ImageAndNextButton extends StatelessWidget {
   const ImageAndNextButton({
@@ -16,7 +18,9 @@ class ImageAndNextButton extends StatelessWidget {
             Image.asset("assets/images/card_image.png",width: screenWidth*0.1,
               height:screenHeight*0.1,),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+
+            },
             icon: const Icon(Icons.delete),
           ),
         ],

@@ -6,7 +6,8 @@ class Habit {
   bool isCompleted;
   Timestamp createdAt;
   String practiceTime;
-  String habitId; // Habit ID
+  String habitId;
+  String date;
 
   Habit({
     required this.userId,
@@ -14,21 +15,23 @@ class Habit {
     this.isCompleted = false,
     required this.practiceTime,
     required this.createdAt,
-  }) : habitId = ''; // Set habitId to an empty value by default
+    String? date,
+    String? habitId,
+  })  : date = date ?? DateTime.now().toLocal().toIso8601String().split('T')[0],
+        habitId = '';
 
-  // Convert the object to a map for storing it in Firestore
   Map<String, dynamic> toMap() {
     return {
       'userId': userId,
-      'habitId': habitId, // Add habitId here
+      'habitId': habitId,
       'title': title,
       'isCompleted': isCompleted,
-      'createdAt': createdAt, // Store Timestamp directly
+      'createdAt': createdAt,
       'practiceTime': practiceTime,
+      'date': date,
     };
   }
 
-  // Create Habit from Firestore document
   factory Habit.fromMap(Map<String, dynamic> map, String id) {
     return Habit(
       userId: map['userId'] ?? '',
@@ -36,10 +39,10 @@ class Habit {
       isCompleted: map['isCompleted'] ?? false,
       createdAt: map['createdAt'] ?? Timestamp.now(),
       practiceTime: map['practiceTime'] ?? '',
-    )..habitId = id; // Set habitId from the document during conversion
+      date: map['date'],
+    )..habitId = id;
   }
 
-  // Add a new Habit to Firestore
   Future<void> addHabit(String title, String practiceTime) async {
     CollectionReference habitsCollection =
     FirebaseFirestore.instance.collection('habits');
@@ -49,35 +52,30 @@ class Habit {
     Habit habit = Habit(
       userId: userId,
       title: title,
-      createdAt: Timestamp.now(), // Use Timestamp
+      createdAt: Timestamp.now(),
+      date: date ,
       practiceTime: practiceTime,
     );
 
-    habit.habitId = newId; // Set habitId for the new ID
+    habit.habitId = newId;
 
     try {
       await habitsCollection.doc(newId).set(habit.toMap());
+      print('Habit added: ${habit.toMap()}');
     } catch (e) {
       print('Error adding habit: $e');
     }
   }
 
-  // Retrieve all habits
-  Future<List<Habit>> getHabits() async {
-    CollectionReference habitsCollection =
-    FirebaseFirestore.instance.collection('habits');
-    QuerySnapshot querySnapshot = await habitsCollection.get();
 
-    return querySnapshot.docs.map((doc) {
-      return Habit.fromMap(doc.data() as Map<String, dynamic>, doc.id);
-    }).toList();
-  }
-
-  // Delete Habit by id
   Future<void> deleteHabit(String id) async {
-    await FirebaseFirestore.instance.collection('habits').doc(id).delete();
+    try {
+      await FirebaseFirestore.instance.collection('habits').doc(id).delete();
+      print('Habit with id $id deleted successfully.');
+    } catch (e) {
+      print('Error deleting habit: $e');
+    }
   }
-
   // Update Habit by id
   Future<void> updateHabit(String id, String newTitle, bool isCompleted) async {
     await FirebaseFirestore.instance.collection('habits').doc(id).update({
