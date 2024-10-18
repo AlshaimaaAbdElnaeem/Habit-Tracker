@@ -83,7 +83,7 @@ if (state is HabitError){
                           GestureDetector(
                             onTap: () {
                               setState(() {
-                                BlocProvider.of<HabitCubit>(context).updateHabit(habit[index].habitId, !habit[index].isCompleted);
+                                BlocProvider.of<HabitCubit>(context).updateHabit(habit[index].habitId,true);
                               });
                             },
                             child:habit[index].isCompleted ==false ? Container(
