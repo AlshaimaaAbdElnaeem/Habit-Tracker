@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_project/Habit_firebase.dart';
 
 import '../../../../core/widgets/progress_circle_widget.dart';
 
@@ -16,8 +17,8 @@ class ReportPageCall extends StatefulWidget {
 
 class _ReportPageState extends State<ReportPageCall> {
   final List<String> completedTasks = [];
-
   final List<String> incompleteTasks = [];
+  final List<Habit> allHabits = [];
 
   double _progressValue = 0.0; // Initial progress value
 
@@ -190,16 +191,26 @@ class _ReportPageState extends State<ReportPageCall> {
             // List of days with progress percentage
             Expanded(
               child: ListView.builder(
-                itemCount: 7, // Example: 7 days
+                itemCount: allHabits.length, // Number of habits
                 itemBuilder: (context, index) {
-                  // Example: simulate random progress for each day
-                  int completedTasksForDay = (index + 1) %
-                      5; // Example: completed tasks count for the day
-                  int totalTasksForDay =
-                      5; // Example: total tasks count for the day
-                  double dayProgress =
-                      (completedTasksForDay / totalTasksForDay) * 100;
-                  String dayTitle = 'Day ${index + 1}'; // Example: Day number
+                  // Initialize completed days counter for the habit
+                  int completedDaysForHabit = 0;
+
+                  // Calculate how many days have passed since the habit was created
+                  int daysSinceHabitCreation = DateTime.now().difference(allHabits[index].createdAt as DateTime).inDays;
+
+                  // Loop through all the days since habit creation to count completed days
+                  for (int i = daysSinceHabitCreation; i > 0; i--) {
+                    if (allHabits[i].isCompleted == true) { // Check if the habit was completed on a specific day
+                      completedDaysForHabit++;
+                    }
+                  }
+
+                  // Calculate the progress percentage of the habit
+                  double habitProgress = (completedDaysForHabit / daysSinceHabitCreation) * 100;
+
+                  // Get the title of the current habit
+                  String habitTitle = allHabits[index].title;
 
                   return Card(
                     margin: EdgeInsets.all(8.0),
@@ -207,16 +218,16 @@ class _ReportPageState extends State<ReportPageCall> {
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // Day title on the left
+                          // Display habit title on the left
                           Text(
-                            dayTitle,
+                            habitTitle,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          // Percentage icon on the right
+                          // Display percentage in a circular icon on the right
                           CircleAvatar(
                             backgroundColor: Colors.blue,
                             child: Text(
-                              '${dayProgress.toInt()}%', // Display percentage
+                              '${habitProgress.toInt()}%', // Show progress percentage
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
@@ -226,7 +237,8 @@ class _ReportPageState extends State<ReportPageCall> {
                   );
                 },
               ),
-            ),
+            )
+
           ],
         ),
       ),
