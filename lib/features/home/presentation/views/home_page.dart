@@ -36,12 +36,13 @@ class _HomePageState extends State<HomePage> {
     _pages = [
     HomePageContent(userEmail:widget.userEmail),
     ReportPage(),
-    ProfilePage(onThemeChanged: onThemeChanged), // تمرير الدالة
+    ProfilePage(onThemeChanged: onThemeChanged),
     PrivacyPolicyPage(),
-    // Placeholder for third page
   ];
     super.initState();
     BlocProvider.of<HabitCubit>(context).resetHabitsIfNewDay(widget.userEmail);
+ BlocProvider.of<HabitCubit>(context).fetchHabitsById(widget.userEmail, DateTime.now().toLocal().toIso8601String().split(
+        'T')[0]);
   }
 
   @override

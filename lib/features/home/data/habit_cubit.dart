@@ -108,37 +108,43 @@ class HabitCubit extends Cubit<HabitStates> {
     DateTime today = DateTime.now().toLocal();
     String todayString = today.toIso8601String().split('T')[0];
 
-
+    // التحقق من وجود عادات لهذا اليوم
     QuerySnapshot previousHabitsSnapshot = await habitsCollection
         .where('userId', isEqualTo: userId)
         .where('date', isEqualTo: todayString)
         .get();
-    if (previousHabitsSnapshot.docs.isEmpty) {
 
+    if (previousHabitsSnapshot.docs.isEmpty) {
+      // جلب العادات من اليوم السابق
       QuerySnapshot previousDateSnapshot = await habitsCollection
           .where('userId', isEqualTo: userId)
           .where('date', isEqualTo: today.subtract(Duration(days: 1)).toIso8601String().split('T')[0])
           .get();
 
+      // نسخ جميع العادات
       for (var doc in previousDateSnapshot.docs) {
         Habit habit = Habit.fromMap(doc.data() as Map<String, dynamic>, doc.id);
 
-        if (habit.isCompleted) {
-          Habit newHabit = Habit(
-            userId: habit.userId,
-            title: habit.title,
-            isCompleted: false,
-            practiceTime: habit.practiceTime,
-            createdAt: Timestamp.now(),
-            date: todayString,
-            habitId: habit.habitId,
-          );
+        // توليد معرف جديد لكل عادة
+        String newHabitId = habitsCollection.doc().id;
 
-          await habitsCollection.add(newHabit.toMap());
-        }
+        Habit newHabit = Habit(
+          userId: habit.userId,
+          title: habit.title,
+          isCompleted: false,  // إعادة تعيين الحالة إلى غير مكتملة
+          practiceTime: habit.practiceTime,
+          createdAt: Timestamp.now(),
+          date: todayString,
+          habitId: newHabitId,  // تعيين المعرف هنا بشكل صحيح
+        );
+
+        // إنشاء الوثيقة الجديدة باستخدام المعرف المخصص
+        await habitsCollection.doc(newHabitId).set(newHabit.toMap());
       }
     }
   }
+
+
 
   Future<void> deleteHabit(String id) async {
     await FirebaseFirestore.instance.collection('habits').doc(id).delete();

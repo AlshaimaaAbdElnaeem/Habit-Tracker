@@ -18,12 +18,13 @@ class Habit {
     String? date,
     String? habitId,
   })  : date = date ?? DateTime.now().toLocal().toIso8601String().split('T')[0],
-        habitId = '';
+        habitId = habitId ?? ''; // تعديل هنا
 
+  // تحويل الكائن إلى Map
   Map<String, dynamic> toMap() {
     return {
       'userId': userId,
-      'habitId': habitId,
+      'habitId': habitId, // تأكد من تعيين habitId بشكل صحيح هنا
       'title': title,
       'isCompleted': isCompleted,
       'createdAt': createdAt,
@@ -32,6 +33,7 @@ class Habit {
     };
   }
 
+  // إنشاء كائن Habit من Map
   factory Habit.fromMap(Map<String, dynamic> map, String id) {
     return Habit(
       userId: map['userId'] ?? '',
@@ -40,24 +42,25 @@ class Habit {
       createdAt: map['createdAt'] ?? Timestamp.now(),
       practiceTime: map['practiceTime'] ?? '',
       date: map['date'],
-    )..habitId = id;
+      habitId: id, // تعيين id في الحقل habitId هنا
+    );
   }
 
+  // إضافة عادة جديدة
   Future<void> addHabit(String title, String practiceTime) async {
     CollectionReference habitsCollection =
     FirebaseFirestore.instance.collection('habits');
 
-    String newId = habitsCollection.doc().id; // Get a new ID
+    String newId = habitsCollection.doc().id; // توليد معرّف جديد
 
     Habit habit = Habit(
       userId: userId,
       title: title,
       createdAt: Timestamp.now(),
-      date: date ,
+      date: date,
       practiceTime: practiceTime,
+      habitId: newId, // تعيين habitId بشكل صحيح
     );
-
-    habit.habitId = newId;
 
     try {
       await habitsCollection.doc(newId).set(habit.toMap());
@@ -67,7 +70,7 @@ class Habit {
     }
   }
 
-
+  // حذف عادة
   Future<void> deleteHabit(String id) async {
     try {
       await FirebaseFirestore.instance.collection('habits').doc(id).delete();
@@ -76,11 +79,17 @@ class Habit {
       print('Error deleting habit: $e');
     }
   }
-  // Update Habit by id
+
+  // تحديث عادة حسب id
   Future<void> updateHabit(String id, String newTitle, bool isCompleted) async {
-    await FirebaseFirestore.instance.collection('habits').doc(id).update({
-      'title': newTitle,
-      'isCompleted': isCompleted,
-    });
+    try {
+      await FirebaseFirestore.instance.collection('habits').doc(id).update({
+        'title': newTitle,
+        'isCompleted': isCompleted,
+      });
+      print('Habit updated successfully.');
+    } catch (e) {
+      print('Error updating habit: $e');
+    }
   }
 }

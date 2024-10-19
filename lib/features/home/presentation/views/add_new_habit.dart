@@ -196,7 +196,6 @@ class _CreateCustomHabitState extends State<CreateCustomHabit> {
             Center(
               child: TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) =>  HomePage(userEmail:widget.userId)),
