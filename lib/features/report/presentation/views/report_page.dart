@@ -196,7 +196,6 @@ class _ReportPageState extends State<ReportPageCall> {
               builder: (context , state) {
                 if (state is HabitsLoaded){
                   allHabits = state.habits;
-                  print(allHabits);
                 }
                 return Expanded(
                   child: ListView.builder(
