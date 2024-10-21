@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_project/Habit_firebase.dart';
+import 'package:task_project/features/home/data/habit_cubit.dart';
+import 'package:task_project/features/home/data/habit_states.dart';
 
 import '../../../../core/widgets/progress_circle_widget.dart';
 
@@ -18,7 +21,7 @@ class ReportPageCall extends StatefulWidget {
 class _ReportPageState extends State<ReportPageCall> {
   final List<String> completedTasks = [];
   final List<String> incompleteTasks = [];
-  final List<Habit> allHabits = [];
+   List<Habit> allHabits = [];
 
   double _progressValue = 0.0; // Initial progress value
 
@@ -108,13 +111,13 @@ class _ReportPageState extends State<ReportPageCall> {
                                 fit: BoxFit.cover,
                               ),
                             ),
-                            SizedBox(height: 5),
+                           const SizedBox(height: 5),
                             // Space between image and percentage
                             // Percentage text
                             Text(
                               '${(_progressValue * 100).toStringAsFixed(0)}%',
                               // Display percentage
-                              style: TextStyle(
+                              style:const TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.bold),
                             ),
                           ],
@@ -133,13 +136,13 @@ class _ReportPageState extends State<ReportPageCall> {
                             children: [
                               ...completedTasks.map((task) => Row(
                                 children: [
-                                  Icon(Icons.check_circle,
+                                  const Icon(Icons.check_circle,
                                       color: Colors.green, size: 16),
                                   // Reduce icon size
-                                  SizedBox(width: 5),
+                                  const SizedBox(width: 5),
                                   Text(
                                     task,
-                                    style: TextStyle(
+                                    style:const TextStyle(
                                         fontSize:
                                         10), // Decrease task text size
                                   ),
@@ -157,12 +160,12 @@ class _ReportPageState extends State<ReportPageCall> {
                                 children: [
                                   Text(
                                     task,
-                                    style: TextStyle(
+                                    style:const TextStyle(
                                         fontSize:
                                         12), // Decrease task text size
                                   ),
-                                  SizedBox(width: 5),
-                                  Icon(Icons.radio_button_unchecked,
+                                  const SizedBox(width: 5),
+                                  const Icon(Icons.radio_button_unchecked,
                                       color: Colors.red, size: 16),
                                   // Reduce icon size
                                 ],
@@ -176,12 +179,12 @@ class _ReportPageState extends State<ReportPageCall> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // Space between progress card and list
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: Container(
-                child: Text(
+                child:const Text(
                   "History",
                   style: TextStyle(fontSize: 25),
                 ),
@@ -189,54 +192,60 @@ class _ReportPageState extends State<ReportPageCall> {
             ),
 
             // List of days with progress percentage
-            Expanded(
-              child: ListView.builder(
-                itemCount: allHabits.length, // Number of habits
-                itemBuilder: (context, index) {
-                  // Initialize completed days counter for the habit
-                  int completedDaysForHabit = 0;
+            BlocBuilder<HabitCubit, HabitStates>(
+              builder: (context , state) {
+                if (state is HabitsLoaded){
+                  allHabits = state.habits;
+                  print(allHabits);
+                }
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: allHabits.length,
+                    itemBuilder: (context, index) {
+                      int completedDaysForHabit = 0;
 
-                  // Calculate how many days have passed since the habit was created
-                  int daysSinceHabitCreation = DateTime.now().difference(allHabits[index].createdAt as DateTime).inDays;
+                      int daysSinceHabitCreation = DateTime.now().difference(allHabits[index].createdAt.toDate() ).inDays;
 
-                  // Loop through all the days since habit creation to count completed days
-                  for (int i = daysSinceHabitCreation; i > 0; i--) {
-                    if (allHabits[i].isCompleted == true) { // Check if the habit was completed on a specific day
-                      completedDaysForHabit++;
-                    }
-                  }
+                      // Loop through all the days since habit creation to count completed days
+                      for (int i = daysSinceHabitCreation; i > 0; i--) {
+                        if (allHabits[i].isCompleted == true) { // Check if the habit was completed on a specific day
+                          completedDaysForHabit++;
+                        }
+                      }
 
-                  // Calculate the progress percentage of the habit
-                  double habitProgress = (completedDaysForHabit / daysSinceHabitCreation) * 100;
+                      // Calculate the progress percentage of the habit
+                      double habitProgress = (completedDaysForHabit / daysSinceHabitCreation) * 100;
 
-                  // Get the title of the current habit
-                  String habitTitle = allHabits[index].title;
+                      // Get the title of the current habit
+                      String habitTitle = allHabits[index].title;
 
-                  return Card(
-                    margin: EdgeInsets.all(8.0),
-                    child: ListTile(
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          // Display habit title on the left
-                          Text(
-                            habitTitle,
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                      return Card(
+                        margin:const EdgeInsets.all(8.0),
+                        child: ListTile(
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              // Display habit title on the left
+                              Text(
+                                habitTitle,
+                                style:const TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              // Display percentage in a circular icon on the right
+                              CircleAvatar(
+                                backgroundColor: Colors.blue,
+                                child: Text(
+                                  '${habitProgress.toInt()}%', // Show progress percentage
+                                  style:const TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ],
                           ),
-                          // Display percentage in a circular icon on the right
-                          CircleAvatar(
-                            backgroundColor: Colors.blue,
-                            child: Text(
-                              '${habitProgress.toInt()}%', // Show progress percentage
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              }
             )
 
           ],
