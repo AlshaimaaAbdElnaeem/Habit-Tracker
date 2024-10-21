@@ -203,38 +203,38 @@ class _ReportPageState extends State<ReportPageCall> {
                     itemBuilder: (context, index) {
                       int completedDaysForHabit = 0;
 
-                      int daysSinceHabitCreation = DateTime.now().difference(allHabits[index].createdAt.toDate() ).inDays;
+                      int daysSinceHabitCreation =
+                          DateTime.now().difference(allHabits[index].createdAt.toDate()).inDays;
 
-                      // Loop through all the days since habit creation to count completed days
+                      // Safely loop through all days since habit creation
                       for (int i = daysSinceHabitCreation; i > 0; i--) {
-                        if (allHabits[i].isCompleted == true) { // Check if the habit was completed on a specific day
+                        if (allHabits[index].isCompleted) {
                           completedDaysForHabit++;
                         }
                       }
 
-                      // Calculate the progress percentage of the habit
-                      double habitProgress = (completedDaysForHabit / daysSinceHabitCreation) * 100;
+                      // Calculate progress with a safe check
+                      double habitProgress = daysSinceHabitCreation > 0
+                          ? (completedDaysForHabit / daysSinceHabitCreation) * 100
+                          : 0.0;
 
-                      // Get the title of the current habit
                       String habitTitle = allHabits[index].title;
 
                       return Card(
-                        margin:const EdgeInsets.all(8.0),
+                        margin: const EdgeInsets.all(8.0),
                         child: ListTile(
                           title: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              // Display habit title on the left
                               Text(
                                 habitTitle,
-                                style:const TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(fontWeight: FontWeight.bold),
                               ),
-                              // Display percentage in a circular icon on the right
                               CircleAvatar(
                                 backgroundColor: Colors.blue,
                                 child: Text(
-                                  '${habitProgress.toInt()}%', // Show progress percentage
-                                  style:const TextStyle(color: Colors.white),
+                                  '${habitProgress.toInt()}%', // Safe conversion
+                                  style: const TextStyle(color: Colors.white),
                                 ),
                               ),
                             ],
